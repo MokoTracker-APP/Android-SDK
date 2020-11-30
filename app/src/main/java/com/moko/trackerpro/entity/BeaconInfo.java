@@ -15,4 +15,6 @@ public class BeaconInfo {
     public String minor;
     public int rssi_1m;
     public String proximity;
+    public boolean isOldFirmware;
+    public int available;
 }

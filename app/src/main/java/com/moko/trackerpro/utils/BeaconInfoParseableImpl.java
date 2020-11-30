@@ -4,10 +4,10 @@ import android.os.ParcelUuid;
 import android.os.SystemClock;
 import android.util.SparseArray;
 
-import com.moko.trackerpro.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.service.DeviceInfoParseable;
 import com.moko.support.utils.MokoUtils;
+import com.moko.trackerpro.entity.BeaconInfo;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,12 +50,14 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         int connectable = 0;
         int track = 0;
         int battery = 0;
+        boolean isOldFirmware = false;
+        int available = 0;
         Iterator iterator = map.keySet().iterator();
         if (iterator.hasNext()) {
             ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
-            if (parcelUuid.toString().startsWith("0000ff03")) {
+            if (parcelUuid.toString().startsWith("0000ff02")) {
                 byte[] bytes = map.get(parcelUuid);
-                if (bytes != null) {
+                if (bytes != null && bytes.length >= 9) {
                     major = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 0, 2)));
                     minor = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 2, 4)));
                     rssi_1m = bytes[4];
@@ -64,6 +66,24 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
                     connectable = Integer.parseInt(binary.substring(7));
                     track = Integer.parseInt(binary.substring(6, 7));
                     battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 7, 9));
+                    isOldFirmware = true;
+                } else {
+                    return null;
+                }
+            } else if (parcelUuid.toString().startsWith("0000ff03")) {
+                byte[] bytes = map.get(parcelUuid);
+                if (bytes != null && bytes.length >= 9) {
+                    major = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 0, 2)));
+                    minor = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 2, 4)));
+                    rssi_1m = bytes[4];
+                    txPower = bytes[5];
+                    String binary = MokoUtils.hexString2binaryString(MokoUtils.byte2HexString(bytes[6]));
+                    connectable = Integer.parseInt(binary.substring(7));
+                    track = Integer.parseInt(binary.substring(6, 7));
+                    battery = bytes[7] & 0xFF;
+                    available = 100 - (bytes[8] & 0xFF);
+                } else {
+                    return null;
                 }
             } else {
                 return null;
@@ -87,6 +107,18 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             long intervalTime = currentTime - beaconInfo.scanTime;
             beaconInfo.intervalTime = intervalTime;
             beaconInfo.scanTime = currentTime;
+            beaconInfo.isOldFirmware = isOldFirmware;
+            beaconInfo.available = available;
+            double distance = MokoUtils.getDistance(deviceInfo.rssi, rssi_1m);
+            String distanceDesc = "Unknown";
+            if (distance <= 0.1) {
+                distanceDesc = "Immediate";
+            } else if (distance > 0.1 && distance <= 1.0) {
+                distanceDesc = "Near";
+            } else if (distance > 1.0) {
+                distanceDesc = "Far";
+            }
+            beaconInfo.proximity = distanceDesc;
         } else {
             beaconInfo = new BeaconInfo();
             beaconInfo.name = deviceInfo.name;
@@ -111,6 +143,8 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             }
             beaconInfo.proximity = distanceDesc;
             beaconInfo.scanTime = SystemClock.elapsedRealtime();
+            beaconInfo.isOldFirmware = isOldFirmware;
+            beaconInfo.available = available;
             beaconInfoHashMap.put(deviceInfo.mac, beaconInfo);
         }
 

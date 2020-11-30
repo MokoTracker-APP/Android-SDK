@@ -1,38 +1,32 @@
 package com.moko.trackerpro.activity;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.moko.trackerpro.AppConstants;
-import com.moko.trackerpro.R;
-import com.moko.trackerpro.adapter.BeaconListAdapter;
-import com.moko.trackerpro.dialog.AlertMessageDialog;
-import com.moko.trackerpro.dialog.LoadingDialog;
-import com.moko.trackerpro.dialog.LoadingMessageDialog;
-import com.moko.trackerpro.dialog.PasswordDialog;
-import com.moko.trackerpro.dialog.ScanFilterDialog;
-import com.moko.trackerpro.entity.BeaconInfo;
-import com.moko.trackerpro.utils.BeaconInfoParseableImpl;
-import com.moko.trackerpro.utils.SPUtiles;
-import com.moko.trackerpro.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
@@ -47,11 +41,26 @@ import com.moko.support.handler.MokoCharacteristicHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.trackerpro.AppConstants;
+import com.moko.trackerpro.R;
+import com.moko.trackerpro.adapter.BeaconListAdapter;
+import com.moko.trackerpro.dialog.AlertMessageDialog;
+import com.moko.trackerpro.dialog.LoadingDialog;
+import com.moko.trackerpro.dialog.LoadingMessageDialog;
+import com.moko.trackerpro.dialog.PasswordDialog;
+import com.moko.trackerpro.dialog.ScanFilterDialog;
+import com.moko.trackerpro.entity.BeaconInfo;
+import com.moko.trackerpro.service.DfuService;
+import com.moko.trackerpro.utils.BeaconInfoParseableImpl;
+import com.moko.trackerpro.utils.FileUtils;
+import com.moko.trackerpro.utils.SPUtiles;
+import com.moko.trackerpro.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +71,10 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import no.nordicsemi.android.dfu.DfuProgressListener;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
 /**
  * @Date 2020/4/18
@@ -70,6 +83,8 @@ import butterknife.OnClick;
  * @ClassPath com.moko.trackerpro.activity.MainActivity
  */
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
+    public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
+
     @Bind(R.id.iv_refresh)
     ImageView ivRefresh;
     @Bind(R.id.rv_devices)
@@ -87,6 +102,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private ArrayList<BeaconInfo> beaconInfos;
     private BeaconListAdapter adapter;
     private Animation animation = null;
+    private String mDeviceMac;
+    private String mDeviceName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -303,6 +320,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
     private String mPassword;
     private String mSavedPassword;
+    private boolean shouldUpdate;
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
@@ -311,6 +329,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             return;
         }
         BeaconInfo beaconInfo = (BeaconInfo) adapter.getItem(position);
+        shouldUpdate = beaconInfo.isOldFirmware;
         if (beaconInfo != null && beaconInfo.connectable == 1 && !isFinishing()) {
             if (animation != null) {
                 mHandler.removeMessages(0);
@@ -331,6 +350,12 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     if (animation != null) {
                         mHandler.removeMessages(0);
                         MokoSupport.getInstance().stopScanDevice();
+                    }
+                    if (shouldUpdate) {
+                        mDeviceMac = beaconInfo.mac;
+                        mDeviceName = beaconInfo.name;
+                        chooseFirmwareFile();
+                        return;
                     }
                     showLoadingProgressDialog();
                     ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, beaconInfo.mac), 500);
@@ -387,6 +412,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             mPassword = "";
             dismissLoadingProgressDialog();
             dismissLoadingMessageDialog();
+            if (isUpgrade)
+                return;
             ToastUtils.showToast(MainActivity.this, "Disconnected");
             if (animation == null) {
                 startScan();
@@ -397,7 +424,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             HashMap<OrderType, MokoCharacteristic> map = MokoCharacteristicHandler.getInstance().mokoCharacteristicMap;
             if (map.containsKey(OrderType.DEVICE_TYPE)) {
                 showLoadingMessageDialog();
-                mHandler.postDelayed(() -> {
+                ivRefresh.postDelayed(() -> {
                     // open password notify and set passwrord
                     OrderTask orderTask = OrderTaskAssembler.setPassword(mPassword);
                     MokoSupport.getInstance().sendOrder(orderTask);
@@ -430,6 +457,22 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         return;
                     }
                     dismissLoadingProgressDialog();
+
+                    if (shouldUpdate) {
+                        final File firmwareFile = new File(firmwareFilePath);
+                        if (firmwareFile.exists()) {
+                            final DfuServiceInitiator starter = new DfuServiceInitiator(mDeviceMac)
+                                    .setDeviceName(mDeviceName)
+                                    .setKeepBond(false)
+                                    .setDisableNotification(true);
+                            starter.setZip(null, firmwareFilePath);
+                            starter.start(this, DfuService.class);
+                            showDFUProgressDialog("Waiting...");
+                        } else {
+                            Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
+                        }
+                        return;
+                    }
                     Intent i = new Intent(MainActivity.this, DeviceInfoActivity.class);
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, type);
                     startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
@@ -438,7 +481,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     dismissLoadingMessageDialog();
                     if (value.length < 1)
                         return;
-                    mHandler.postDelayed(() -> {
+                    ivRefresh.postDelayed(() -> {
                         showLoadingProgressDialog();
                         if (0 == (value[0] & 0xFF)) {
                             mSavedPassword = mPassword;
@@ -456,6 +499,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
     }
 
+    private String firmwareFilePath;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -464,6 +509,16 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 if (animation == null) {
                     startScan();
                 }
+            }
+        } else if (requestCode == REQUEST_CODE_SELECT_FIRMWARE) {
+            if (resultCode == RESULT_OK) {
+                //得到uri，后面就是将uri转化成file的过程。
+                Uri uri = data.getData();
+                firmwareFilePath = FileUtils.getPath(this, uri);
+                if (TextUtils.isEmpty(firmwareFilePath))
+                    return;
+                showLoadingProgressDialog();
+                ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, mDeviceMac), 500);
             }
         }
     }
@@ -532,4 +587,124 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         protected void handleMessage(MainActivity activity, Message msg) {
         }
     }
+
+    public void chooseFirmwareFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "select file first!"), REQUEST_CODE_SELECT_FIRMWARE);
+        } catch (ActivityNotFoundException ex) {
+            ToastUtils.showToast(this, "install file manager app");
+        }
+    }
+
+    private ProgressDialog mDFUDialog;
+
+    private void showDFUProgressDialog(String tips) {
+        mDFUDialog = new ProgressDialog(MainActivity.this);
+        mDFUDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDFUDialog.setCanceledOnTouchOutside(false);
+        mDFUDialog.setCancelable(false);
+        mDFUDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mDFUDialog.setMessage(tips);
+        if (!isFinishing() && mDFUDialog != null && !mDFUDialog.isShowing()) {
+            mDFUDialog.show();
+        }
+    }
+
+    private void dismissDFUProgressDialog() {
+        mDeviceConnectCount = 0;
+        if (!isFinishing() && mDFUDialog != null && mDFUDialog.isShowing()) {
+            mDFUDialog.dismiss();
+        }
+        AlertMessageDialog dialog = new AlertMessageDialog();
+        dialog.setTitle("Dismiss");
+        dialog.setCancelable(false);
+        dialog.setMessage("The device disconnected!");
+        dialog.setConfirm("OK");
+        dialog.setOnAlertConfirmListener(() -> {
+            isUpgrade = false;
+            if (animation == null) {
+                startScan();
+            }
+        });
+        dialog.show(getSupportFragmentManager());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
+    }
+
+    private int mDeviceConnectCount;
+    private boolean isUpgrade;
+
+    private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onDeviceConnecting(String deviceAddress) {
+            LogModule.w("onDeviceConnecting...");
+            mDeviceConnectCount++;
+            if (mDeviceConnectCount > 3) {
+                Toast.makeText(MainActivity.this, "Error:DFU Failed", Toast.LENGTH_SHORT).show();
+                dismissDFUProgressDialog();
+                final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(MainActivity.this);
+                final Intent abortAction = new Intent(DfuService.BROADCAST_ACTION);
+                abortAction.putExtra(DfuService.EXTRA_ACTION, DfuService.ACTION_ABORT);
+                manager.sendBroadcast(abortAction);
+            }
+        }
+
+        @Override
+        public void onDeviceDisconnecting(String deviceAddress) {
+            LogModule.w("onDeviceDisconnecting...");
+        }
+
+        @Override
+        public void onDfuProcessStarting(String deviceAddress) {
+            isUpgrade = true;
+            mDFUDialog.setMessage("DfuProcessStarting...");
+        }
+
+
+        @Override
+        public void onEnablingDfuMode(String deviceAddress) {
+            mDFUDialog.setMessage("EnablingDfuMode...");
+        }
+
+        @Override
+        public void onFirmwareValidating(String deviceAddress) {
+            mDFUDialog.setMessage("FirmwareValidating...");
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            ToastUtils.showToast(MainActivity.this, "DFU Successfully!");
+            dismissDFUProgressDialog();
+        }
+
+        @Override
+        public void onDfuAborted(String deviceAddress) {
+            mDFUDialog.setMessage("DfuAborted...");
+        }
+
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            mDFUDialog.setMessage("Progress:" + percent + "%");
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            ToastUtils.showToast(MainActivity.this, "Opps!DFU Failed. Please try again!");
+            LogModule.i("Error:" + message);
+            dismissDFUProgressDialog();
+        }
+    };
 }
