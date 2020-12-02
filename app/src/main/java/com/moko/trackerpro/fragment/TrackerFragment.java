@@ -20,12 +20,11 @@ import android.widget.TextView;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.task.OrderTask;
-import com.moko.support.utils.MokoUtils;
 import com.moko.trackerpro.AppConstants;
 import com.moko.trackerpro.R;
 import com.moko.trackerpro.activity.DeviceInfoActivity;
 import com.moko.trackerpro.activity.ExportDataActivity;
-import com.moko.trackerpro.activity.FilterOptionsNewActivity;
+import com.moko.trackerpro.activity.FilterOptionsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +183,7 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
                 clTracking.setVisibility(isTrackingOpen ? View.VISIBLE : View.GONE);
                 break;
             case R.id.tv_filter_options:
-                startActivity(new Intent(getActivity(), FilterOptionsNewActivity.class));
+                startActivity(new Intent(getActivity(), FilterOptionsActivity.class));
                 break;
             case R.id.tv_tracked_data:
                 activity.getSavedCount();

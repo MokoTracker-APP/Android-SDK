@@ -423,45 +423,33 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask setFilterEnable(int enable) {
+    public static OrderTask setFilterAllData(int enable) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterEnable(enable);
+        task.setFilterAllData(enable);
         return task;
     }
 
-    public static OrderTask setFilterMac(String mac) {
+    public static OrderTask setFilterMac(String mac, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterMac(mac);
+        task.setFilterMac(mac, isReverse);
         return task;
     }
 
-    public static OrderTask setFilterName(String name) {
+    public static OrderTask setFilterName(String name, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterName(name);
+        task.setFilterName(name, isReverse);
         return task;
     }
 
-    public static OrderTask setFilterUUID(String uuid) {
+    public static OrderTask setFilterUUID(String uuid, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterUUID(uuid);
+        task.setFilterUUID(uuid, isReverse);
         return task;
     }
 
-    public static OrderTask setFilterMajor(String major) {
+    public static OrderTask setFilterAdvRawData(String rawData, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterMajor(major);
-        return task;
-    }
-
-    public static OrderTask setFilterMinor(String minor) {
-        WriteConfigTask task = new WriteConfigTask();
-        task.setFilterMinor(minor);
-        return task;
-    }
-
-    public static OrderTask setFilterAdvRawData(String rawData) {
-        WriteConfigTask task = new WriteConfigTask();
-        task.setFilterAdvRawData(rawData);
+        task.setFilterAdvRawData(rawData, isReverse);
         return task;
     }
 
@@ -489,15 +477,15 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask setFilterMajorRange(int enable, int majorMin, int majorMax) {
+    public static OrderTask setFilterMajorRange(int enable, int majorMin, int majorMax, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterMajorRange(enable, majorMin, majorMax);
+        task.setFilterMajorRange(enable, majorMin, majorMax, isReverse);
         return task;
     }
 
-    public static OrderTask setFilterMinorRange(int enable, int majorMin, int majorMax) {
+    public static OrderTask setFilterMinorRange(int enable, int majorMin, int majorMax, boolean isReverse) {
         WriteConfigTask task = new WriteConfigTask();
-        task.setFilterMinorRange(enable, majorMin, majorMax);
+        task.setFilterMinorRange(enable, majorMin, majorMax, isReverse);
         return task;
     }
 }

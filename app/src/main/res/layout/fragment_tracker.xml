@@ -177,7 +177,7 @@
             android:layout_marginTop="10dp"
             android:drawableRight="@drawable/arrow_right"
             android:gravity="center_vertical"
-            android:text="Filter Options"
+            android:text="Filtering Options"
             android:textColor="@color/black_333333"
             android:textSize="15sp"
             android:textStyle="bold"

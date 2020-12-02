@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="FILTER OPTIONS"
+            android:text="Filtering Options"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -55,10 +55,10 @@
             android:padding="10dp">
 
             <TextView
-                android:id="@+id/rssi_1m"
+                android:id="@+id/rssi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RSSI FILTER"
+                android:text="RSSI Filtering"
                 android:textColor="@color/black_333333"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -73,7 +73,7 @@
                 android:textColor="@color/grey_b3b3b3"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@id/sb_rssi_filter"
-                app:layout_constraintLeft_toRightOf="@id/rssi_1m" />
+                app:layout_constraintLeft_toRightOf="@id/rssi" />
 
             <SeekBar
                 android:id="@+id/sb_rssi_filter"
@@ -123,18 +123,438 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_rssi_filter_tips" />
 
+            <TextView
+                android:id="@+id/mac_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="MAC Address Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_rssi_filter_tips" />
+
+            <ImageView
+                android:id="@+id/iv_mac_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/mac_address"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/mac_address" />
+
+            <CheckBox
+                android:id="@+id/cb_mac_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_mac_address"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <EditText
+                android:id="@+id/et_mac_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:digits="0123456789abcdefABCDEF"
+                android:hint="1~6 Bytes"
+                android:maxLength="12"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/grey_ebebeb"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_mac_address" />
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_mac_address" />
+
+            <TextView
+                android:id="@+id/adv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="BLE Name Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_mac_address" />
+
+            <ImageView
+                android:id="@+id/iv_adv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/adv_name"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/adv_name" />
+
+            <CheckBox
+                android:id="@+id/cb_adv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_adv_name"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <EditText
+                android:id="@+id/et_adv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="1~10 Characters"
+                android:maxLength="10"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/grey_ebebeb"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_adv_name" />
+
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_adv_name" />
+
+            <TextView
+                android:id="@+id/ibeacon_uuid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="iBeacon UUID Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_adv_name" />
+
+            <ImageView
+                android:id="@+id/iv_ibeacon_uuid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/ibeacon_uuid"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ibeacon_uuid" />
+
+            <CheckBox
+                android:id="@+id/cb_ibeacon_uuid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_ibeacon_uuid"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <EditText
+                android:id="@+id/et_ibeacon_uuid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:digits="0123456789abcdefABCDEF"
+                android:hint="16 Bytes"
+                android:maxLength="36"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/grey_ebebeb"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_uuid" />
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_ibeacon_uuid" />
+
+            <TextView
+                android:id="@+id/ibeacon_major"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="iBeacon Major Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_ibeacon_uuid" />
+
+            <ImageView
+                android:id="@+id/iv_ibeacon_major"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/ibeacon_major"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ibeacon_major" />
+
+            <CheckBox
+                android:id="@+id/cb_ibeacon_major"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/ll_ibeacon_major"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_ibeacon_major"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_major">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="From"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/et_ibeacon_major_min"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1.0"
+                    android:hint="0~65535"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColor="@color/black_333333"
+                    android:textColorHint="@color/grey_ebebeb"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="To"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/et_ibeacon_major_max"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_weight="1.0"
+                    android:hint="0~65535"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColor="@color/black_333333"
+                    android:textColorHint="@color/grey_ebebeb"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_ibeacon_major" />
+
+            <TextView
+                android:id="@+id/ibeacon_minor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="iBeacon Minor Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_ibeacon_major" />
+
+            <ImageView
+                android:id="@+id/iv_ibeacon_minor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/ibeacon_minor"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ibeacon_minor" />
+
+            <CheckBox
+                android:id="@+id/cb_ibeacon_minor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/ll_ibeacon_minor"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_ibeacon_minor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_minor">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="From"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/et_ibeacon_minor_min"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1.0"
+                    android:hint="0~65535"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColor="@color/black_333333"
+                    android:textColorHint="@color/grey_ebebeb"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="To"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/et_ibeacon_minor_max"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_weight="1.0"
+                    android:hint="0~65535"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:textColor="@color/black_333333"
+                    android:textColorHint="@color/grey_ebebeb"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_ibeacon_minor" />
+
+            <TextView
+                android:id="@+id/raw_adv_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="BLE Advertising Data Filtering"
+                android:textColor="@color/black_333333"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ll_ibeacon_minor" />
+
+            <ImageView
+                android:id="@+id/iv_raw_adv_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_unchecked"
+                app:layout_constraintBottom_toBottomOf="@id/raw_adv_data"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/raw_adv_data" />
+
+            <CheckBox
+                android:id="@+id/cb_raw_adv_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Whitelist"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/et_raw_adv_data"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <EditText
+                android:id="@+id/et_raw_adv_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:digits="0123456789abcdefABCDEF"
+                android:hint="1~31 Bytes"
+                android:maxLength="62"
+                android:textColor="@color/black_333333"
+                android:textColorHint="@color/grey_ebebeb"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_raw_adv_data" />
+
+            <View
+                style="@style/divider_line"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_raw_adv_data" />
 
             <TextView
                 android:id="@+id/adv_data_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="ADV Data Filter"
+                android:text="All BLE Devices"
                 android:textColor="@color/black_333333"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_rssi_filter_tips" />
+                app:layout_constraintTop_toBottomOf="@id/et_raw_adv_data" />
 
             <ImageView
                 android:id="@+id/iv_adv_data_filter"
@@ -152,312 +572,11 @@
                 android:id="@+id/tv_adv_data_filter_tips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="*Turn off this option, the Beacon will store all types of BLE ADV data.Turn on this option, the Beacon will store the corresponding ADV data according to the filtering rules."
+                android:text="*Turn on All BLE Devices, the Tracker will store all types of BLE advertising data. Turn off this option, the Tracker will store the corresponding advertising data according to other filtering rules."
                 android:textColor="@color/black_333333"
                 android:textSize="12sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_adv_data_filter" />
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cl_adv_data_filter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_adv_data_filter_tips">
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/mac_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by MAC Address"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/iv_mac_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/mac_address"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/mac_address" />
-
-                <EditText
-                    android:id="@+id/et_mac_address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789abcdefABCDEF"
-                    android:hint="1~6 Bytes"
-                    android:maxLength="12"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_mac_address" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_mac_address" />
-
-                <TextView
-                    android:id="@+id/adv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by ADV Name"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_mac_address" />
-
-                <ImageView
-                    android:id="@+id/iv_adv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/adv_name"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/adv_name" />
-
-                <EditText
-                    android:id="@+id/et_adv_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="1~10 Characters"
-                    android:maxLength="10"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_adv_name" />
-
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_adv_name" />
-
-                <TextView
-                    android:id="@+id/raw_adv_data"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by Raw ADV Data"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_adv_name" />
-
-                <ImageView
-                    android:id="@+id/iv_raw_adv_data"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/raw_adv_data"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/raw_adv_data" />
-
-                <EditText
-                    android:id="@+id/et_raw_adv_data"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789abcdefABCDEF"
-                    android:hint="1~31 Bytes"
-                    android:maxLength="62"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_raw_adv_data" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_raw_adv_data" />
-
-                <TextView
-                    android:id="@+id/ibeacon_uuid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by iBeacon Proximity UUID"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_raw_adv_data" />
-
-                <ImageView
-                    android:id="@+id/iv_ibeacon_uuid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/ibeacon_uuid"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/ibeacon_uuid" />
-
-                <EditText
-                    android:id="@+id/et_ibeacon_uuid"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:digits="0123456789abcdefABCDEF"
-                    android:hint="16 Bytes"
-                    android:maxLength="36"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_uuid" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_ibeacon_uuid" />
-
-                <TextView
-                    android:id="@+id/ibeacon_major"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by iBeacon Major"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_ibeacon_uuid" />
-
-                <ImageView
-                    android:id="@+id/iv_ibeacon_major"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/ibeacon_major"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/ibeacon_major" />
-
-                <EditText
-                    android:id="@+id/et_ibeacon_major"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="0~65535"
-                    android:inputType="number"
-                    android:maxLength="5"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_major" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_ibeacon_major" />
-
-                <TextView
-                    android:id="@+id/ibeacon_minor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:text="Filter by iBeacon Minor"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_ibeacon_major" />
-
-                <ImageView
-                    android:id="@+id/iv_ibeacon_minor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:src="@drawable/ic_unchecked"
-                    app:layout_constraintBottom_toBottomOf="@id/ibeacon_minor"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/ibeacon_minor" />
-
-                <EditText
-                    android:id="@+id/et_ibeacon_minor"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="0~65535"
-                    android:inputType="number"
-                    android:maxLength="5"
-                    android:textColor="@color/black_333333"
-                    android:textColorHint="@color/grey_ebebeb"
-                    android:textSize="15sp"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/iv_ibeacon_minor" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/et_ibeacon_minor" />
-            </android.support.constraint.ConstraintLayout>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 </LinearLayout>

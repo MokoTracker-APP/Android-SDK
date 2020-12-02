@@ -233,7 +233,7 @@ public class WriteConfigTask extends OrderTask {
         data[7] = scanIntervalBytes[1];
     }
 
-    public void setFilterMac(String mac) {
+    public void setFilterMac(String mac, boolean isReverse) {
         if (TextUtils.isEmpty(mac)) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -249,14 +249,14 @@ public class WriteConfigTask extends OrderTask {
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_MAC.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) length;
-            data[4] = (byte) 0x01;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
             for (int i = 0; i < macBytes.length; i++) {
                 data[5 + i] = macBytes[i];
             }
         }
     }
 
-    public void setFilterName(String name) {
+    public void setFilterName(String name, boolean isReverse) {
         if (TextUtils.isEmpty(name)) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -272,14 +272,14 @@ public class WriteConfigTask extends OrderTask {
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_NAME.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) length;
-            data[4] = (byte) 0x01;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
             for (int i = 0; i < nameBytes.length; i++) {
                 data[5 + i] = nameBytes[i];
             }
         }
     }
 
-    public void setFilterAdvRawData(String adv) {
+    public void setFilterAdvRawData(String adv, boolean isReverse) {
         if (TextUtils.isEmpty(adv)) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -295,90 +295,14 @@ public class WriteConfigTask extends OrderTask {
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_ADV_RAW_DATA.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) length;
-            data[4] = (byte) 0x01;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
             for (int i = 0; i < advBytes.length; i++) {
                 data[5 + i] = advBytes[i];
             }
         }
     }
 
-//    public void setFilteriBeacon(String uuid, String major, String minor) {
-//        data = new byte[27];
-//        data[0] = (byte) 0xEA;
-//        data[1] = (byte) ConfigKeyEnum.SET_FILTER_IBEACON.getConfigKey();
-//        data[2] = (byte) 0x00;
-//        data[3] = (byte) 0x17;
-//        if (!TextUtils.isEmpty(uuid)) {
-//            byte[] uuidBytes = MokoUtils.hex2bytes(uuid);
-//            int length = uuidBytes.length;
-//            data[4] = (byte) 0x01;
-//            for (int i = 0; i < length; i++) {
-//                data[5 + i] = uuidBytes[i];
-//            }
-//        } else {
-//            for (int i = 0; i < 17; i++) {
-//                data[4 + i] = (byte) 0x00;
-//            }
-//        }
-//        if (!TextUtils.isEmpty(major)) {
-//            byte[] majorBytes = MokoUtils.hex2bytes(major);
-//            int length = majorBytes.length;
-//            data[21] = (byte) 0x01;
-//            for (int i = 0; i < length; i++) {
-//                data[22 + i] = majorBytes[i];
-//            }
-//        } else {
-//            for (int i = 0; i < 3; i++) {
-//                data[21 + i] = (byte) 0x00;
-//            }
-//        }
-//        if (!TextUtils.isEmpty(minor)) {
-//            byte[] minorBytes = MokoUtils.hex2bytes(minor);
-//            int length = minorBytes.length;
-//            data[24] = (byte) 0x01;
-//            for (int i = 0; i < length; i++) {
-//                data[25 + i] = minorBytes[i];
-//            }
-//        } else {
-//            for (int i = 0; i < 3; i++) {
-//                data[24 + i] = (byte) 0x00;
-//            }
-//        }
-//    }
-
-//    public void setFilterUid(String instanceId, String namespace) {
-//        data = new byte[22];
-//        data[0] = (byte) 0xEA;
-//        data[1] = (byte) ConfigKeyEnum.SET_FILTER_UID.getConfigKey();
-//        data[2] = (byte) 0x00;
-//        data[3] = (byte) 0x12;
-//        if (!TextUtils.isEmpty(instanceId)) {
-//            byte[] instanceIdBytes = MokoUtils.hex2bytes(instanceId);
-//            int length = instanceIdBytes.length;
-//            data[4] = (byte) 0x01;
-//            for (int i = 0; i < length; i++) {
-//                data[5 + i] = instanceIdBytes[i];
-//            }
-//        } else {
-//            for (int i = 0; i < 11; i++) {
-//                data[4 + i] = (byte) 0x00;
-//            }
-//        }
-//        if (!TextUtils.isEmpty(namespace)) {
-//            byte[] namespaceBytes = MokoUtils.hex2bytes(namespace);
-//            int length = namespaceBytes.length;
-//            data[15] = (byte) 0x01;
-//            for (int i = 0; i < length; i++) {
-//                data[16 + i] = namespaceBytes[i];
-//            }
-//        } else {
-//            for (int i = 0; i < 7; i++) {
-//                data[15 + i] = (byte) 0x00;
-//            }
-//        }
-//    }
-
-    public void setFilterEnable(@IntRange(from = 0, to = 1) int enable) {
+    public void setFilterAllData(@IntRange(from = 0, to = 1) int enable) {
         data = new byte[5];
         data[0] = (byte) 0xEA;
         data[1] = (byte) ConfigKeyEnum.SET_FILTER_ALL_DATA.getConfigKey();
@@ -387,7 +311,7 @@ public class WriteConfigTask extends OrderTask {
         data[4] = (byte) enable;
     }
 
-    public void setFilterUUID(String uuid) {
+    public void setFilterUUID(String uuid, boolean isReverse) {
         if (TextUtils.isEmpty(uuid)) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -397,58 +321,15 @@ public class WriteConfigTask extends OrderTask {
             data[4] = (byte) 0x00;
         } else {
             byte[] uuidBytes = MokoUtils.hex2bytes(uuid);
-            int length = uuidBytes.length;
+            int length = uuidBytes.length + 1;
             data = new byte[4 + length];
             data[0] = (byte) 0xEA;
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_UUID.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) length;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
             for (int i = 0; i < uuidBytes.length; i++) {
-                data[4 + i] = uuidBytes[i];
-            }
-        }
-    }
-
-    public void setFilterMajor(String major) {
-        if (TextUtils.isEmpty(major)) {
-            data = new byte[5];
-            data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_FILTER_MAJOR.getConfigKey();
-            data[2] = (byte) 0x00;
-            data[3] = (byte) 0x01;
-            data[4] = (byte) 0x00;
-        } else {
-            byte[] majorBytes = MokoUtils.hex2bytes(major);
-            int length = majorBytes.length;
-            data = new byte[4 + length];
-            data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_FILTER_MAJOR.getConfigKey();
-            data[2] = (byte) 0x00;
-            data[3] = (byte) length;
-            for (int i = 0; i < majorBytes.length; i++) {
-                data[4 + i] = majorBytes[i];
-            }
-        }
-    }
-
-    public void setFilterMinor(String minor) {
-        if (TextUtils.isEmpty(minor)) {
-            data = new byte[5];
-            data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_FILTER_MINOR.getConfigKey();
-            data[2] = (byte) 0x00;
-            data[3] = (byte) 0x01;
-            data[4] = (byte) 0x00;
-        } else {
-            byte[] minorBytes = MokoUtils.hex2bytes(minor);
-            int length = minorBytes.length;
-            data = new byte[4 + length];
-            data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_FILTER_MINOR.getConfigKey();
-            data[2] = (byte) 0x00;
-            data[3] = (byte) length;
-            for (int i = 0; i < minorBytes.length; i++) {
-                data[4 + i] = minorBytes[i];
+                data[5 + i] = uuidBytes[i];
             }
         }
     }
@@ -464,7 +345,8 @@ public class WriteConfigTask extends OrderTask {
 
     public void setFilterMajorRange(@IntRange(from = 0, to = 1) int enable,
                                     @IntRange(from = 0, to = 65535) int majorMin,
-                                    @IntRange(from = 0, to = 65535) int majorMax) {
+                                    @IntRange(from = 0, to = 65535) int majorMax,
+                                    boolean isReverse) {
         if (enable == 0) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -475,21 +357,23 @@ public class WriteConfigTask extends OrderTask {
         } else {
             byte[] majorMinBytes = MokoUtils.toByteArray(majorMin, 2);
             byte[] majorMaxBytes = MokoUtils.toByteArray(majorMax, 2);
-            data = new byte[8];
+            data = new byte[9];
             data[0] = (byte) 0xEA;
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_MAJOR_RANGE.getConfigKey();
             data[2] = (byte) 0x00;
-            data[3] = (byte) 0x04;
-            data[4] = majorMinBytes[0];
-            data[5] = majorMinBytes[1];
-            data[6] = majorMaxBytes[0];
-            data[7] = majorMaxBytes[1];
+            data[3] = (byte) 0x05;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
+            data[5] = majorMinBytes[0];
+            data[6] = majorMinBytes[1];
+            data[7] = majorMaxBytes[0];
+            data[8] = majorMaxBytes[1];
         }
     }
 
     public void setFilterMinorRange(@IntRange(from = 0, to = 1) int enable,
                                     @IntRange(from = 0, to = 65535) int minorMin,
-                                    @IntRange(from = 0, to = 65535) int minorMax) {
+                                    @IntRange(from = 0, to = 65535) int minorMax,
+                                    boolean isReverse) {
         if (enable == 0) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
@@ -500,15 +384,16 @@ public class WriteConfigTask extends OrderTask {
         } else {
             byte[] minorMinBytes = MokoUtils.toByteArray(minorMin, 2);
             byte[] minorMaxBytes = MokoUtils.toByteArray(minorMax, 2);
-            data = new byte[8];
+            data = new byte[9];
             data[0] = (byte) 0xEA;
             data[1] = (byte) ConfigKeyEnum.SET_FILTER_MINOR_RANGE.getConfigKey();
             data[2] = (byte) 0x00;
-            data[3] = (byte) 0x04;
-            data[4] = minorMinBytes[0];
-            data[5] = minorMinBytes[1];
-            data[6] = minorMaxBytes[0];
-            data[7] = minorMaxBytes[1];
+            data[3] = (byte) 0x05;
+            data[4] = (byte) (isReverse ? 0x02 : 0x01);
+            data[5] = minorMinBytes[0];
+            data[6] = minorMinBytes[1];
+            data[7] = minorMaxBytes[0];
+            data[8] = minorMaxBytes[1];
         }
     }
 }
