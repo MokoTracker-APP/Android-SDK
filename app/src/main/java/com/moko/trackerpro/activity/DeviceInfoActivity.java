@@ -26,17 +26,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.moko.trackerpro.AppConstants;
-import com.moko.trackerpro.R;
-import com.moko.trackerpro.dialog.AlertMessageDialog;
-import com.moko.trackerpro.dialog.LoadingMessageDialog;
-import com.moko.trackerpro.fragment.AdvFragment;
-import com.moko.trackerpro.fragment.DeviceFragment;
-import com.moko.trackerpro.fragment.ScannerFragment;
-import com.moko.trackerpro.fragment.SettingFragment;
-import com.moko.trackerpro.service.DfuService;
-import com.moko.trackerpro.utils.FileUtils;
-import com.moko.trackerpro.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
@@ -48,6 +37,17 @@ import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
+import com.moko.trackerpro.AppConstants;
+import com.moko.trackerpro.R;
+import com.moko.trackerpro.dialog.AlertMessageDialog;
+import com.moko.trackerpro.dialog.LoadingMessageDialog;
+import com.moko.trackerpro.fragment.AdvFragment;
+import com.moko.trackerpro.fragment.DeviceFragment;
+import com.moko.trackerpro.fragment.SettingFragment;
+import com.moko.trackerpro.fragment.TrackerFragment;
+import com.moko.trackerpro.service.DfuService;
+import com.moko.trackerpro.utils.FileUtils;
+import com.moko.trackerpro.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -87,16 +87,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     ImageView ivSave;
     private FragmentManager fragmentManager;
     private AdvFragment advFragment;
-    private ScannerFragment scannerFragment;
+    private TrackerFragment trackerFragment;
     private SettingFragment settingFragment;
     private DeviceFragment deviceFragment;
     public String mDeviceMac;
     public String mDeviceName;
     private boolean mReceiverTag = false;
     private int disConnectType;
-    private int deviceType;
-
-    public boolean isUseNewFunction;
+    public int deviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +108,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         }
         if (deviceType == 4 || deviceType == 6) {
             advFragment.disableTrigger();
-            scannerFragment.disableTrigger();
+            trackerFragment.disableTrigger();
             settingFragment.disableTrigger();
         }
         fragmentManager = getFragmentManager();
@@ -132,47 +130,36 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             List<OrderTask> orderTasks = new ArrayList<>();
             // sync time after connect success;
             orderTasks.add(OrderTaskAssembler.setTime());
-            orderTasks.add(OrderTaskAssembler.getDeviceModel());
-            orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
+            orderTasks.add(OrderTaskAssembler.shake());
+            orderTasks.add(OrderTaskAssembler.getDeviceName());
+            orderTasks.add(OrderTaskAssembler.getUUID());
+            orderTasks.add(OrderTaskAssembler.getMajor());
+            orderTasks.add(OrderTaskAssembler.getMinor());
+            orderTasks.add(OrderTaskAssembler.getAdvInterval());
+            orderTasks.add(OrderTaskAssembler.getTransmission());
+            orderTasks.add(OrderTaskAssembler.getMeasurePower());
+            if (deviceType != 4 && deviceType != 6) {
+                orderTasks.add(OrderTaskAssembler.getAdvTrigger());
+            }
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
 
     private void initFragment() {
         advFragment = AdvFragment.newInstance();
-        scannerFragment = ScannerFragment.newInstance();
+        trackerFragment = TrackerFragment.newInstance();
         settingFragment = SettingFragment.newInstance();
         deviceFragment = DeviceFragment.newInstance();
         fragmentManager.beginTransaction()
                 .add(R.id.frame_container, advFragment)
-                .add(R.id.frame_container, scannerFragment)
+                .add(R.id.frame_container, trackerFragment)
                 .add(R.id.frame_container, settingFragment)
                 .add(R.id.frame_container, deviceFragment)
                 .show(advFragment)
-                .hide(scannerFragment)
+                .hide(trackerFragment)
                 .hide(settingFragment)
                 .hide(deviceFragment)
                 .commit();
-    }
-
-    private void getOtherData() {
-        showSyncingProgressDialog();
-        List<OrderTask> orderTasks = new ArrayList<>();
-        if (isUseNewFunction) {
-            orderTasks.add(OrderTaskAssembler.shake());
-        }
-        // get adv params
-        orderTasks.add(OrderTaskAssembler.getDeviceName());
-        orderTasks.add(OrderTaskAssembler.getUUID());
-        orderTasks.add(OrderTaskAssembler.getMajor());
-        orderTasks.add(OrderTaskAssembler.getMinor());
-        orderTasks.add(OrderTaskAssembler.getAdvInterval());
-        orderTasks.add(OrderTaskAssembler.getTransmission());
-        orderTasks.add(OrderTaskAssembler.getMeasurePower());
-        if (deviceType != 4 && deviceType != 6) {
-            orderTasks.add(OrderTaskAssembler.getAdvTrigger());
-        }
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -260,9 +247,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         int txPower = value[0];
                         advFragment.setTransmission(txPower);
                         break;
-                    case STORE_ALERT:
+                    case TRACKING_NOTIFY:
                         int trackNotify = value[0] & 0xFF;
-                        scannerFragment.setTrackNotify(trackNotify);
+                        trackerFragment.setTrackingNotify(trackNotify);
                         break;
                     case BATTERY:
                         int battery = MokoUtils.toInt(value);
@@ -271,7 +258,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     case DEVICE_MODEL:
                         String productModel = new String(value);
                         deviceFragment.setProductModel(productModel);
-                        MokoSupport.getInstance().productModel = productModel;
                         break;
                     case SOFTWARE_VERSION:
                         String softwareVersion = new String(value);
@@ -280,16 +266,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     case FIRMWARE_VERSION:
                         String firmwareVersion = new String(value);
                         deviceFragment.setFirmwareVersion(firmwareVersion);
-                        int index = firmwareVersion.indexOf("V");
-                        if (index > 0) {
-                            String firmwareVersionSuffix = firmwareVersion.substring(index + 1);
-                            String versionCode = firmwareVersionSuffix.replaceAll("\\.", "");
-                            if (!TextUtils.isEmpty(versionCode)) {
-                                MokoSupport.getInstance().firmwareVersion = Integer.parseInt(versionCode);
-                                isUseNewFunction = MokoSupport.getInstance().isUseNewFunction();
-                            }
-                        }
-                        tvTitle.postDelayed(() -> getOtherData(), 500);
                         break;
                     case HARDWARE_VERSION:
                         String hardwareVersion = new String(value);
@@ -303,9 +279,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         String manufacture = new String(value);
                         deviceFragment.setManufacture(manufacture);
                         break;
-                    case SCAN_MODE:
-                        int scanner = value[0] & 0xFF;
-                        settingFragment.setBeaconScanner(scanner);
+                    case TRACKING_STATE:
+                        int tracking = value[0] & 0xFF;
+                        trackerFragment.setTracking(tracking);
                         break;
                     case CONNECTION_MODE:
                         int connectable = value[0] & 0xFF;
@@ -329,19 +305,19 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         advFragment.setAdvTrigger(duration);
                                     }
                                     break;
-                                case GET_STORE_TIME_CONDITION:
+                                case GET_TRACKING_INTERVAL:
                                     if (length == 1) {
                                         final int time = value[4] & 0xFF;
-                                        scannerFragment.setStorageInterval(time);
+                                        trackerFragment.setTrackingInterval(time);
                                     }
                                     break;
-                                case GET_SCAN_MOVE_CONDITION:
+                                case GET_TRACKING_TRIGGER:
                                     if (length == 1) {
-                                        scannerFragment.setScannerTriggerClose();
+                                        trackerFragment.setTrackingTrigger("0");
                                     }
                                     if (length == 2) {
-                                        final int duration = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                        scannerFragment.setScannerTrigger(duration);
+                                        final String duration = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6)));
+                                        trackerFragment.setTrackingTrigger(duration);
                                     }
                                     break;
                                 case GET_DEVICE_MAC:
@@ -363,26 +339,55 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         settingFragment.setSensitivity(sensitivity);
                                     }
                                     break;
-                                case GET_SCAN_START_TIME:
+                                case GET_SCAN_SETTINGS:
                                     if (length == 1) {
-                                        int startTime = value[4] & 0xFF;
-                                        settingFragment.setScanStartTime(startTime);
+                                        byte[] scanWindowBytes = Arrays.copyOfRange(value, 4, 6);
+                                        byte[] scanIntervalBytes = Arrays.copyOfRange(value, 6, 8);
+                                        String scanWindowStr = String.valueOf(MokoUtils.toInt(scanWindowBytes));
+                                        String scanIntervalStr = String.valueOf(MokoUtils.toInt(scanIntervalBytes));
+                                        trackerFragment.setScanSettings(scanWindowStr, scanIntervalStr);
                                     }
                                     break;
-                                case GET_TRIGGER_ENABLE:
+                                case GET_BUTTON_POWER:
                                     if (length == 1) {
                                         int enable = value[4] & 0xFF;
                                         settingFragment.setButtonPower(enable);
                                     }
                                     break;
+                                case GET_CONNECT_NOTIFICATION:
+                                    if (length == 1) {
+                                        int enable = value[4] & 0xFF;
+                                        settingFragment.setConnectNotification(enable);
+                                    }
+                                    break;
+                                case GET_LOW_BATTERY:
+                                    if (length == 3) {
+                                        int lowBattery20 = value[4] & 0xFF;
+                                        int lowBattery10 = value[5] & 0xFF;
+                                        int lowBattery5 = value[6] & 0xFF;
+                                        settingFragment.setLowBattery(lowBattery20, lowBattery10, lowBattery5);
+                                    }
+                                    break;
+                                case GET_BUTTON_RESET:
+                                    if (length == 1) {
+                                        int enable = value[4] & 0xFF;
+                                        settingFragment.setButtonReset(enable);
+                                    }
+                                    break;
                                 case GET_VIBRATIONS_NUMBER:
                                     if (length == 1) {
                                         int vibrationsNumber = value[4] & 0xFF;
-                                        scannerFragment.setVibrationsNumber(vibrationsNumber);
+                                        trackerFragment.setVibrationsNumber(vibrationsNumber);
+                                    }
+                                    break;
+                                case GET_SAVED_RAW_DATA:
+                                    if (length == 1) {
+                                        int dataFormat = value[4] & 0xFF;
+                                        trackerFragment.setTrackingDataFormat(dataFormat);
                                     }
                                     break;
                                 case SET_ADV_MOVE_CONDITION:
-                                case SET_SCAN_MOVE_CONDITION:
+                                case SET_SAVED_RAW_DATA:
                                     // EB 31 00 00
                                     // EB 32 00 00
                                     if (length == 0) {
@@ -558,9 +563,9 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     }
                 }
                 if (radioBtnScanner.isChecked()) {
-                    if (scannerFragment.isValid()) {
+                    if (trackerFragment.isValid()) {
                         showSyncingProgressDialog();
-                        scannerFragment.saveParams();
+                        trackerFragment.saveParams();
                     } else {
                         ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
                     }
@@ -590,7 +595,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 showAdvAndGetData();
                 break;
             case R.id.radioBtn_scanner:
-                showScannerAndGetData();
+                showTrackerAndGetData();
                 break;
             case R.id.radioBtn_setting:
                 showSettingAndGetData();
@@ -606,7 +611,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ivSave.setVisibility(View.GONE);
         fragmentManager.beginTransaction()
                 .hide(advFragment)
-                .hide(scannerFragment)
+                .hide(trackerFragment)
                 .hide(settingFragment)
                 .show(deviceFragment)
                 .commit();
@@ -617,6 +622,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         orderTasks.add(OrderTaskAssembler.getMacAddress());
         orderTasks.add(OrderTaskAssembler.getDeviceModel());
         orderTasks.add(OrderTaskAssembler.getSoftwareVersion());
+        orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
         orderTasks.add(OrderTaskAssembler.getHardwareVersion());
         orderTasks.add(OrderTaskAssembler.getProductDate());
         orderTasks.add(OrderTaskAssembler.getManufacturer());
@@ -628,42 +634,46 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ivSave.setVisibility(View.GONE);
         fragmentManager.beginTransaction()
                 .hide(advFragment)
-                .hide(scannerFragment)
+                .hide(trackerFragment)
                 .show(settingFragment)
                 .hide(deviceFragment)
                 .commit();
         showSyncingProgressDialog();
         List<OrderTask> orderTasks = new ArrayList<>();
         // setting
-        orderTasks.add(OrderTaskAssembler.getTriggerSensitivity());
-        orderTasks.add(OrderTaskAssembler.getScanMode());
-        orderTasks.add(OrderTaskAssembler.getScanStartTime());
-        orderTasks.add(OrderTaskAssembler.getConnectionMode());
         orderTasks.add(OrderTaskAssembler.getButtonPower());
-        orderTasks.add(OrderTaskAssembler.getMacAddress());
+        orderTasks.add(OrderTaskAssembler.getConnectionMode());
+        orderTasks.add(OrderTaskAssembler.getConnectNotification());
+        orderTasks.add(OrderTaskAssembler.getLowBattery());
+        if (deviceType != 4 && deviceType != 6) {
+            orderTasks.add(OrderTaskAssembler.getTriggerSensitivity());
+        }
+        orderTasks.add(OrderTaskAssembler.getButtonReset());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
-    private void showScannerAndGetData() {
-        tvTitle.setText(R.string.title_scanner);
+    private void showTrackerAndGetData() {
+        tvTitle.setText(R.string.title_tracker);
         ivSave.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction()
                 .hide(advFragment)
-                .show(scannerFragment)
+                .show(trackerFragment)
                 .hide(settingFragment)
                 .hide(deviceFragment)
                 .commit();
         showSyncingProgressDialog();
         List<OrderTask> orderTasks = new ArrayList<>();
-        // scanner
-        orderTasks.add(OrderTaskAssembler.getStoreTimeCondition());
-        orderTasks.add(OrderTaskAssembler.getStoreAlert());
+        // tracker
+        orderTasks.add(OrderTaskAssembler.getTrackingState());
+        orderTasks.add(OrderTaskAssembler.getScanSettings());
         if (deviceType != 4 && deviceType != 6) {
-            orderTasks.add(OrderTaskAssembler.getScannerTrigger());
+            orderTasks.add(OrderTaskAssembler.getTrackingTrigger());
         }
-        if (isUseNewFunction) {
-            orderTasks.add(OrderTaskAssembler.getVibrationNumber());
-        }
+        orderTasks.add(OrderTaskAssembler.getVibrationNumber());
+        orderTasks.add(OrderTaskAssembler.getTrackingNotify());
+        orderTasks.add(OrderTaskAssembler.getTrackingInterval());
+        orderTasks.add(OrderTaskAssembler.getSavedRawData());
+
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -672,7 +682,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ivSave.setVisibility(View.VISIBLE);
         fragmentManager.beginTransaction()
                 .show(advFragment)
-                .hide(scannerFragment)
+                .hide(trackerFragment)
                 .hide(settingFragment)
                 .hide(deviceFragment)
                 .commit();
@@ -710,32 +720,29 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setSensitivity(sensitivity), OrderTaskAssembler.getTriggerSensitivity());
     }
 
-    public void changeScannerState(int enable, int scanMode) {
-        showSyncingProgressDialog();
-        List<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setScanMode(enable));
-        orderTasks.add(OrderTaskAssembler.getScanMode());
-        orderTasks.add(OrderTaskAssembler.setScanStartTime(scanMode));
-        orderTasks.add(OrderTaskAssembler.getScanStartTime());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
-    public void changeScannerState(int enable) {
-        showSyncingProgressDialog();
-        List<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setScanMode(enable));
-        orderTasks.add(OrderTaskAssembler.getScanMode());
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-    }
-
     public void changeConnectState(int connectState) {
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnectionMode(connectState), OrderTaskAssembler.getConnectionMode());
     }
 
+    public void changeConnectionNotification(int enable) {
+        showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnectNotification(enable), OrderTaskAssembler.getConnectNotification());
+    }
+
+    public void setLowBattery(int lowBattery20, int lowBattery10, int lowBattery5) {
+        showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setLowBattery(lowBattery20, lowBattery10, lowBattery5), OrderTaskAssembler.getLowBattery());
+    }
+
     public void changeButtonPowerState(int buttonPowerState) {
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setButtonPower(buttonPowerState), OrderTaskAssembler.getButtonPower());
+    }
+
+    public void changeButtonResetState(int buttonResetState) {
+        showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setButtonReset(buttonResetState), OrderTaskAssembler.getButtonReset());
     }
 
     public void powerOff() {

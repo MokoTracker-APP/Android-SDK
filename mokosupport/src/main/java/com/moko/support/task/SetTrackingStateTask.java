@@ -4,11 +4,11 @@ import android.support.annotation.IntRange;
 
 import com.moko.support.entity.OrderType;
 
-public class SetScanModeTask extends OrderTask {
+public class SetTrackingStateTask extends OrderTask {
     public byte[] data;
 
-    public SetScanModeTask() {
-        super(OrderType.SCAN_MODE, OrderTask.RESPONSE_TYPE_WRITE);
+    public SetTrackingStateTask() {
+        super(OrderType.TRACKING_STATE, OrderTask.RESPONSE_TYPE_WRITE);
     }
 
     public void setData(@IntRange(from = 0, to = 1) int scanMode) {

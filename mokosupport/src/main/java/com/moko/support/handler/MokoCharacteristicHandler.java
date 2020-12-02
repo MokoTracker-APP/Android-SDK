@@ -150,16 +150,16 @@ public class MokoCharacteristicHandler {
                         mokoCharacteristicMap.put(OrderType.BATTERY, new MokoCharacteristic(characteristic, OrderType.BATTERY));
                         continue;
                     }
-                    if (characteristicUuid.equals(OrderType.SCAN_MODE.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.SCAN_MODE, new MokoCharacteristic(characteristic, OrderType.SCAN_MODE));
+                    if (characteristicUuid.equals(OrderType.TRACKING_STATE.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.TRACKING_STATE, new MokoCharacteristic(characteristic, OrderType.TRACKING_STATE));
                         continue;
                     }
                     if (characteristicUuid.equals(OrderType.CONNECTION_MODE.getUuid())) {
                         mokoCharacteristicMap.put(OrderType.CONNECTION_MODE, new MokoCharacteristic(characteristic, OrderType.CONNECTION_MODE));
                         continue;
                     }
-                    if (characteristicUuid.equals(OrderType.STORE_ALERT.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.STORE_ALERT, new MokoCharacteristic(characteristic, OrderType.STORE_ALERT));
+                    if (characteristicUuid.equals(OrderType.TRACKING_NOTIFY.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.TRACKING_NOTIFY, new MokoCharacteristic(characteristic, OrderType.TRACKING_NOTIFY));
                         continue;
                     }
                     if (characteristicUuid.equals(OrderType.RESET.getUuid())) {

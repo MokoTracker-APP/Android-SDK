@@ -31,14 +31,18 @@ public class WriteConfigTask extends OrderTask {
         switch (key) {
             case GET_DEVICE_MAC:
             case GET_ADV_MOVE_CONDITION:
-            case GET_SCAN_MOVE_CONDITION:
-            case GET_STORE_RSSI_CONDITION:
-            case GET_STORE_TIME_CONDITION:
+            case GET_TRACKING_TRIGGER:
+            case GET_FILTER_RSSI:
+            case GET_TRACKING_INTERVAL:
             case GET_TIME:
             case CLOSE_DEVICE:
             case SET_DEFAULT:
-            case GET_TRIGGER_ENABLE:
-            case DELETE_STORE_DATA:
+            case GET_BUTTON_POWER:
+            case GET_BUTTON_RESET:
+            case GET_CONNECT_NOTIFICATION:
+            case GET_SAVED_RAW_DATA:
+            case GET_LOW_BATTERY:
+            case CLEAR_SAVED_DATA:
             case GET_MOVE_SENSITIVE:
             case GET_FILTER_MAC:
             case GET_FILTER_NAME:
@@ -46,8 +50,8 @@ public class WriteConfigTask extends OrderTask {
             case GET_FILTER_MAJOR:
             case GET_FILTER_MINOR:
             case GET_FILTER_ADV_RAW_DATA:
-            case GET_FILTER_ENABLE:
-            case GET_SCAN_START_TIME:
+            case GET_FILTER_ALL_DATA:
+            case GET_SCAN_SETTINGS:
             case GET_VIBRATIONS_NUMBER:
             case GET_FILTER_MAJOR_RANGE:
             case GET_FILTER_MINOR_RANGE:
@@ -96,11 +100,11 @@ public class WriteConfigTask extends OrderTask {
         }
     }
 
-    public void setScanMoveCondition(@IntRange(from = 0, to = 65535) int second) {
+    public void setTrackingTrigger(@IntRange(from = 0, to = 65535) int second) {
         if (second == 0) {
             data = new byte[5];
             data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_SCAN_MOVE_CONDITION.getConfigKey();
+            data[1] = (byte) ConfigKeyEnum.SET_TRACKING_TRIGGER.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) 0x01;
             data[4] = (byte) 0x00;
@@ -108,7 +112,7 @@ public class WriteConfigTask extends OrderTask {
             byte[] secondBytes = MokoUtils.toByteArray(second, 2);
             data = new byte[6];
             data[0] = (byte) 0xEA;
-            data[1] = (byte) ConfigKeyEnum.SET_SCAN_MOVE_CONDITION.getConfigKey();
+            data[1] = (byte) ConfigKeyEnum.SET_TRACKING_TRIGGER.getConfigKey();
             data[2] = (byte) 0x00;
             data[3] = (byte) 0x02;
             data[4] = secondBytes[0];
@@ -119,16 +123,16 @@ public class WriteConfigTask extends OrderTask {
     public void setStoreRssiCondition(@IntRange(from = -127, to = 0) int rssi) {
         data = new byte[5];
         data[0] = (byte) 0xEA;
-        data[1] = (byte) ConfigKeyEnum.SET_STORE_RSSI_CONDITION.getConfigKey();
+        data[1] = (byte) ConfigKeyEnum.SET_FILTER_RSSI.getConfigKey();
         data[2] = (byte) 0x00;
         data[3] = (byte) 0x01;
         data[4] = (byte) rssi;
     }
 
-    public void setStoreTimeCondition(@IntRange(from = 0, to = 255) int minute) {
+    public void setTrackingInterval(@IntRange(from = 0, to = 255) int minute) {
         data = new byte[5];
         data[0] = (byte) 0xEA;
-        data[1] = (byte) ConfigKeyEnum.SET_STORE_TIME_CONDITION.getConfigKey();
+        data[1] = (byte) ConfigKeyEnum.SET_TRACKING_INTERVAL.getConfigKey();
         data[2] = (byte) 0x00;
         data[3] = (byte) 0x01;
         data[4] = (byte) minute;
@@ -158,10 +162,50 @@ public class WriteConfigTask extends OrderTask {
     public void setTriggerEnable(@IntRange(from = 0, to = 1) int enable) {
         data = new byte[5];
         data[0] = (byte) 0xEA;
-        data[1] = (byte) ConfigKeyEnum.SET_TRIGGER_ENABLE.getConfigKey();
+        data[1] = (byte) ConfigKeyEnum.SET_BUTTON_POWER.getConfigKey();
         data[2] = (byte) 0x00;
         data[3] = (byte) 0x01;
         data[4] = (byte) enable;
+    }
+
+    public void setButtonReset(@IntRange(from = 0, to = 1) int enable) {
+        data = new byte[5];
+        data[0] = (byte) 0xEA;
+        data[1] = (byte) ConfigKeyEnum.SET_BUTTON_RESET.getConfigKey();
+        data[2] = (byte) 0x00;
+        data[3] = (byte) 0x01;
+        data[4] = (byte) enable;
+    }
+
+    public void setConnectNotification(@IntRange(from = 0, to = 1) int enable) {
+        data = new byte[5];
+        data[0] = (byte) 0xEA;
+        data[1] = (byte) ConfigKeyEnum.SET_CONNECT_NOTIFICATION.getConfigKey();
+        data[2] = (byte) 0x00;
+        data[3] = (byte) 0x01;
+        data[4] = (byte) enable;
+    }
+
+    public void setSavedRawData(@IntRange(from = 0, to = 1) int enable) {
+        data = new byte[5];
+        data[0] = (byte) 0xEA;
+        data[1] = (byte) ConfigKeyEnum.SET_SAVED_RAW_DATA.getConfigKey();
+        data[2] = (byte) 0x00;
+        data[3] = (byte) 0x01;
+        data[4] = (byte) enable;
+    }
+
+    public void setLowBattery(@IntRange(from = 0, to = 255) int lowBattery20,
+                              @IntRange(from = 0, to = 255) int lowBattery10,
+                              @IntRange(from = 0, to = 255) int lowBattery5) {
+        data = new byte[7];
+        data[0] = (byte) 0xEA;
+        data[1] = (byte) ConfigKeyEnum.SET_LOW_BATTERY.getConfigKey();
+        data[2] = (byte) 0x00;
+        data[3] = (byte) 0x03;
+        data[4] = (byte) lowBattery20;
+        data[5] = (byte) lowBattery10;
+        data[6] = (byte) lowBattery5;
     }
 
     public void setMoveSensitive(@IntRange(from = 7, to = 255) int sensitive) {
@@ -173,13 +217,19 @@ public class WriteConfigTask extends OrderTask {
         data[4] = (byte) sensitive;
     }
 
-    public void setScanStartTime(@IntRange(from = 1, to = 4) int startTime) {
-        data = new byte[5];
+    public void setScanSettings(@IntRange(from = 4, to = 16384) int scanWindow,
+                                @IntRange(from = 4, to = 16384) int scanInterval) {
+        byte[] scanWindowBytes = MokoUtils.toByteArray(scanWindow, 2);
+        byte[] scanIntervalBytes = MokoUtils.toByteArray(scanInterval, 2);
+        data = new byte[8];
         data[0] = (byte) 0xEA;
-        data[1] = (byte) ConfigKeyEnum.SET_SCAN_START_TIME.getConfigKey();
+        data[1] = (byte) ConfigKeyEnum.SET_SCAN_SETTINGS.getConfigKey();
         data[2] = (byte) 0x00;
-        data[3] = (byte) 0x01;
-        data[4] = (byte) startTime;
+        data[3] = (byte) 0x04;
+        data[4] = scanWindowBytes[0];
+        data[5] = scanWindowBytes[1];
+        data[6] = scanIntervalBytes[0];
+        data[7] = scanIntervalBytes[1];
     }
 
     public void setFilterMac(String mac) {
@@ -330,7 +380,7 @@ public class WriteConfigTask extends OrderTask {
     public void setFilterEnable(@IntRange(from = 0, to = 1) int enable) {
         data = new byte[5];
         data[0] = (byte) 0xEA;
-        data[1] = (byte) ConfigKeyEnum.SET_FILTER_ENABLE.getConfigKey();
+        data[1] = (byte) ConfigKeyEnum.SET_FILTER_ALL_DATA.getConfigKey();
         data[2] = (byte) 0x00;
         data[3] = (byte) 0x01;
         data[4] = (byte) enable;

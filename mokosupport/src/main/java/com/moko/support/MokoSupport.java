@@ -466,9 +466,9 @@ public class MokoSupport implements MokoResponseCallback {
                 case TRANSMISSION:
                 case ADV_INTERVAL:
                 case DEVICE_NAME:
-                case SCAN_MODE:
+                case TRACKING_STATE:
                 case CONNECTION_MODE:
-                case STORE_ALERT:
+                case TRACKING_NOTIFY:
                 case RESET:
                     formatCommonOrder(orderTask, value);
                     break;
@@ -499,9 +499,9 @@ public class MokoSupport implements MokoResponseCallback {
                 case ADV_INTERVAL:
                 case DEVICE_NAME:
                 case BATTERY:
-                case SCAN_MODE:
+                case TRACKING_STATE:
                 case CONNECTION_MODE:
-                case STORE_ALERT:
+                case TRACKING_NOTIFY:
                     formatCommonOrder(orderTask, value);
                     break;
             }
@@ -553,15 +553,5 @@ public class MokoSupport implements MokoResponseCallback {
 
     public void disableStoreDataNotify() {
         mokoBleManager.disableStoreDataNotify();
-    }
-
-    public int firmwareVersion;
-    public String productModel;
-
-    public boolean isUseNewFunction() {
-        if ((!TextUtils.isEmpty(productModel) && "MOKOTracker".equals(productModel)) || firmwareVersion >= 310) {
-            return true;
-        }
-        return false;
     }
 }

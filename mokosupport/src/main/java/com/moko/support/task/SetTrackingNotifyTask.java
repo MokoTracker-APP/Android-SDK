@@ -4,11 +4,11 @@ import android.support.annotation.IntRange;
 
 import com.moko.support.entity.OrderType;
 
-public class SetStoreAlertTask extends OrderTask {
+public class SetTrackingNotifyTask extends OrderTask {
     public byte[] data;
 
-    public SetStoreAlertTask() {
-        super(OrderType.STORE_ALERT, OrderTask.RESPONSE_TYPE_WRITE);
+    public SetTrackingNotifyTask() {
+        super(OrderType.TRACKING_NOTIFY, OrderTask.RESPONSE_TYPE_WRITE);
     }
 
     public void setData(@IntRange(from = 0, to = 3) int enable) {

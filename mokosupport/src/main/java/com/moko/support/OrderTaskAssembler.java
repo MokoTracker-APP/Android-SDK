@@ -15,9 +15,9 @@ import com.moko.support.task.GetManufacturerTask;
 import com.moko.support.task.GetMeasurePowerTask;
 import com.moko.support.task.GetMinorTask;
 import com.moko.support.task.GetProductDateTask;
-import com.moko.support.task.GetScanModeTask;
+import com.moko.support.task.GetTrackingStateTask;
 import com.moko.support.task.GetSoftwareVersionTask;
-import com.moko.support.task.GetStoreAlertTask;
+import com.moko.support.task.GetTrackingNotifyTask;
 import com.moko.support.task.GetTransmissionTask;
 import com.moko.support.task.GetUUIDTask;
 import com.moko.support.task.OrderTask;
@@ -29,8 +29,8 @@ import com.moko.support.task.SetMeasurePowerTask;
 import com.moko.support.task.SetMinorTask;
 import com.moko.support.task.SetPasswordTask;
 import com.moko.support.task.SetResetTask;
-import com.moko.support.task.SetScanModeTask;
-import com.moko.support.task.SetStoreAlertTask;
+import com.moko.support.task.SetTrackingStateTask;
+import com.moko.support.task.SetTrackingNotifyTask;
 import com.moko.support.task.SetTransmissionTask;
 import com.moko.support.task.SetUUIDTask;
 import com.moko.support.task.WriteConfigTask;
@@ -105,9 +105,9 @@ public class OrderTaskAssembler {
         return getMeasurePowerTask;
     }
 
-    public static OrderTask getStoreAlert() {
-        GetStoreAlertTask getStoreAlertTask = new GetStoreAlertTask();
-        return getStoreAlertTask;
+    public static OrderTask getTrackingNotify() {
+        GetTrackingNotifyTask getTrackingNotifyTask = new GetTrackingNotifyTask();
+        return getTrackingNotifyTask;
     }
 
     public static OrderTask getTransmission() {
@@ -125,9 +125,9 @@ public class OrderTaskAssembler {
         return getAdvIntervalTask;
     }
 
-    public static OrderTask getScanMode() {
-        GetScanModeTask getScanModeTask = new GetScanModeTask();
-        return getScanModeTask;
+    public static OrderTask getTrackingState() {
+        GetTrackingStateTask getTrackingStateTask = new GetTrackingStateTask();
+        return getTrackingStateTask;
     }
 
     public static OrderTask getAdvTrigger() {
@@ -136,15 +136,15 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getStoreTimeCondition() {
+    public static OrderTask getTrackingInterval() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_STORE_TIME_CONDITION);
+        task.setData(ConfigKeyEnum.GET_TRACKING_INTERVAL);
         return task;
     }
 
-    public static OrderTask getScannerTrigger() {
+    public static OrderTask getTrackingTrigger() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_SCAN_MOVE_CONDITION);
+        task.setData(ConfigKeyEnum.GET_TRACKING_TRIGGER);
         return task;
     }
 
@@ -160,15 +160,39 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getScanStartTime() {
+    public static OrderTask getScanSettings() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_SCAN_START_TIME);
+        task.setData(ConfigKeyEnum.GET_SCAN_SETTINGS);
         return task;
     }
 
     public static OrderTask getButtonPower() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_TRIGGER_ENABLE);
+        task.setData(ConfigKeyEnum.GET_BUTTON_POWER);
+        return task;
+    }
+
+    public static OrderTask getButtonReset() {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setData(ConfigKeyEnum.GET_BUTTON_RESET);
+        return task;
+    }
+
+    public static OrderTask getConnectNotification() {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setData(ConfigKeyEnum.GET_CONNECT_NOTIFICATION);
+        return task;
+    }
+
+    public static OrderTask getSavedRawData() {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setData(ConfigKeyEnum.GET_SAVED_RAW_DATA);
+        return task;
+    }
+
+    public static OrderTask getLowBattery() {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setData(ConfigKeyEnum.GET_LOW_BATTERY);
         return task;
     }
 
@@ -180,13 +204,13 @@ public class OrderTaskAssembler {
 
     public static OrderTask getRssiFilter() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_STORE_RSSI_CONDITION);
+        task.setData(ConfigKeyEnum.GET_FILTER_RSSI);
         return task;
     }
 
     public static OrderTask getFilterEnable() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_FILTER_ENABLE);
+        task.setData(ConfigKeyEnum.GET_FILTER_ALL_DATA);
         return task;
     }
 
@@ -296,16 +320,16 @@ public class OrderTaskAssembler {
         return setResetTask;
     }
 
-    public static OrderTask setScanMode(int scanMode) {
-        SetScanModeTask setScanModeTask = new SetScanModeTask();
-        setScanModeTask.setData(scanMode);
-        return setScanModeTask;
+    public static OrderTask setTrackingState(int trackingState) {
+        SetTrackingStateTask setTrackingStateTask = new SetTrackingStateTask();
+        setTrackingStateTask.setData(trackingState);
+        return setTrackingStateTask;
     }
 
-    public static OrderTask setStoreAlert(int enable) {
-        SetStoreAlertTask setStoreAlertTask = new SetStoreAlertTask();
-        setStoreAlertTask.setData(enable);
-        return setStoreAlertTask;
+    public static OrderTask setTrackingNotify(int enable) {
+        SetTrackingNotifyTask setTrackingNotifyTask = new SetTrackingNotifyTask();
+        setTrackingNotifyTask.setData(enable);
+        return setTrackingNotifyTask;
     }
 
     public static OrderTask setTransmission(int transmission) {
@@ -339,15 +363,15 @@ public class OrderTaskAssembler {
         return writeConfigTask;
     }
 
-    public static WriteConfigTask setStorageInterval(int minutes) {
+    public static WriteConfigTask setTrackingInterval(int minutes) {
         WriteConfigTask writeConfigTask = new WriteConfigTask();
-        writeConfigTask.setStoreTimeCondition(minutes);
+        writeConfigTask.setTrackingInterval(minutes);
         return writeConfigTask;
     }
 
-    public static WriteConfigTask setScannerMoveCondition(int seconds) {
+    public static WriteConfigTask setTrackingTrigger(int seconds) {
         WriteConfigTask writeConfigTask = new WriteConfigTask();
-        writeConfigTask.setScanMoveCondition(seconds);
+        writeConfigTask.setTrackingTrigger(seconds);
         return writeConfigTask;
     }
 
@@ -357,15 +381,39 @@ public class OrderTaskAssembler {
         return writeConfigTask;
     }
 
-    public static WriteConfigTask setScanStartTime(int startTime) {
+    public static WriteConfigTask setScanSettings(int startWindow, int scanInterval) {
         WriteConfigTask writeConfigTask = new WriteConfigTask();
-        writeConfigTask.setScanStartTime(startTime);
+        writeConfigTask.setScanSettings(startWindow, scanInterval);
         return writeConfigTask;
     }
 
     public static OrderTask setButtonPower(int enable) {
         WriteConfigTask task = new WriteConfigTask();
         task.setTriggerEnable(enable);
+        return task;
+    }
+
+    public static OrderTask setButtonReset(int enable) {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setButtonReset(enable);
+        return task;
+    }
+
+    public static OrderTask setConnectNotification(int enable) {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setConnectNotification(enable);
+        return task;
+    }
+
+    public static OrderTask setSavedRawData(int enable) {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setSavedRawData(enable);
+        return task;
+    }
+
+    public static OrderTask setLowBattery(int lowBattery20, int lowBattery10, int lowBattery5) {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setLowBattery(lowBattery20, lowBattery10, lowBattery5);
         return task;
     }
 
@@ -419,7 +467,7 @@ public class OrderTaskAssembler {
 
     public static OrderTask deleteTrackedData() {
         WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.DELETE_STORE_DATA);
+        task.setData(ConfigKeyEnum.CLEAR_SAVED_DATA);
         return task;
     }
 

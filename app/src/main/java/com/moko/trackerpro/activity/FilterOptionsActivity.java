@@ -216,7 +216,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                             }
                             int length = value[3] & 0xFF;
                             switch (configKeyEnum) {
-                                case GET_STORE_RSSI_CONDITION:
+                                case GET_FILTER_RSSI:
                                     if (length == 1) {
                                         final int rssi = value[4];
                                         int progress = rssi + 127;
@@ -225,7 +225,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                                         tvRssiFilterTips.setText(getString(R.string.rssi_filter, rssi));
                                     }
                                     break;
-                                case GET_FILTER_ENABLE:
+                                case GET_FILTER_ALL_DATA:
                                     if (length == 1) {
                                         final int enable = value[4] & 0xFF;
                                         advDataFilterEnable = enable == 0;
@@ -313,7 +313,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                                         }
                                     }
                                     break;
-                                case SET_STORE_RSSI_CONDITION:
+                                case SET_FILTER_RSSI:
                                 case SET_FILTER_MAC:
                                 case SET_FILTER_NAME:
                                 case SET_FILTER_UUID:
@@ -324,7 +324,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                                         savedParamsError = true;
                                     }
                                     break;
-                                case SET_FILTER_ENABLE:
+                                case SET_FILTER_ALL_DATA:
                                     if (length != 0) {
                                         savedParamsError = true;
                                     }

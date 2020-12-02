@@ -216,7 +216,7 @@ public class ExportDataActivity extends BaseActivity {
                             }
                             int length = value[3] & 0xFF;
                             switch (configKeyEnum) {
-                                case DELETE_STORE_DATA:
+                                case CLEAR_SAVED_DATA:
                                     if (length == 0) {
                                         storeString = new StringBuilder();
                                         LogModule.writeTrackedFile("");

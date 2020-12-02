@@ -620,9 +620,9 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         AlertMessageDialog dialog = new AlertMessageDialog();
         dialog.setTitle("Dismiss");
-        dialog.setCancelable(false);
         dialog.setMessage("The device disconnected!");
         dialog.setConfirm("OK");
+        dialog.setCancelGone();
         dialog.setOnAlertConfirmListener(() -> {
             isUpgrade = false;
             if (animation == null) {
