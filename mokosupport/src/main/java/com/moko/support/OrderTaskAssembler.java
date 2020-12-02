@@ -471,6 +471,12 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask getSavedCount() {
+        WriteConfigTask task = new WriteConfigTask();
+        task.setData(ConfigKeyEnum.GET_SAVED_COUNT);
+        return task;
+    }
+
     public static OrderTask shake() {
         WriteConfigTask task = new WriteConfigTask();
         task.setData(ConfigKeyEnum.SHAKE);

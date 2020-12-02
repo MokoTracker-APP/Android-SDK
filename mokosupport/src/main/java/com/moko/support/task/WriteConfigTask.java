@@ -55,6 +55,7 @@ public class WriteConfigTask extends OrderTask {
             case GET_VIBRATIONS_NUMBER:
             case GET_FILTER_MAJOR_RANGE:
             case GET_FILTER_MINOR_RANGE:
+            case GET_SAVED_COUNT:
             case SHAKE:
                 createGetConfigData(key.getConfigKey());
                 break;

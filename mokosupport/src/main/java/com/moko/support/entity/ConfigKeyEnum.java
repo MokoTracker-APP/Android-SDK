@@ -29,6 +29,7 @@ public enum ConfigKeyEnum implements Serializable {
     SET_BUTTON_POWER(0x38),
 
     CLEAR_SAVED_DATA(0x29),
+    GET_SAVED_COUNT(0XF2),
 
     GET_MOVE_SENSITIVE(0x40),
     SET_MOVE_SENSITIVE(0x50),

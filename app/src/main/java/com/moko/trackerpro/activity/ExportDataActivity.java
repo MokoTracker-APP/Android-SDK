@@ -19,13 +19,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.moko.trackerpro.AppConstants;
-import com.moko.trackerpro.R;
-import com.moko.trackerpro.adapter.ExportDataListAdapter;
-import com.moko.trackerpro.dialog.AlertMessageDialog;
-import com.moko.trackerpro.entity.ExportData;
-import com.moko.trackerpro.utils.ToastUtils;
-import com.moko.trackerpro.utils.Utils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
@@ -36,6 +29,13 @@ import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
+import com.moko.trackerpro.AppConstants;
+import com.moko.trackerpro.R;
+import com.moko.trackerpro.adapter.ExportDataListAdapter;
+import com.moko.trackerpro.dialog.AlertMessageDialog;
+import com.moko.support.entity.ExportData;
+import com.moko.trackerpro.utils.ToastUtils;
+import com.moko.trackerpro.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -62,6 +62,10 @@ public class ExportDataActivity extends BaseActivity {
     TextView tvEmpty;
     @Bind(R.id.rv_export_data)
     RecyclerView rvExportData;
+    @Bind(R.id.tv_sum)
+    TextView tvSum;
+    @Bind(R.id.tv_count)
+    TextView tvCount;
 
     private boolean mReceiverTag = false;
     private StringBuilder storeString = new StringBuilder();
@@ -69,6 +73,7 @@ public class ExportDataActivity extends BaseActivity {
     private boolean mIsShown;
     private boolean isSync;
     private ExportDataListAdapter adapter;
+    private int isSavedRawData;
 
 
     @Override
@@ -77,8 +82,19 @@ public class ExportDataActivity extends BaseActivity {
         setContentView(R.layout.activity_export_data);
         ButterKnife.bind(this);
 
-        exportDatas = new ArrayList<>();
+        int savedCount = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SAVED_COUNT, 0);
+        int leftCount = getIntent().getIntExtra(AppConstants.EXTRA_KEY_LEFT_COUNT, 0);
+        isSavedRawData = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SAVED_RAW_DATA, 0);
+        int sum = savedCount + leftCount;
+        tvSum.setText(String.format("Sum:%d/%d", savedCount, sum));
+        exportDatas = MokoSupport.getInstance().exportDatas;
+        if (exportDatas != null && exportDatas.size() > 0) {
+            tvCount.setText(String.format("Count:%d", exportDatas.size()));
+        } else {
+            exportDatas = new ArrayList<>();
+        }
         adapter = new ExportDataListAdapter();
+        adapter.setSavedRawData(isSavedRawData);
         adapter.openLoadAnimation();
         adapter.replaceData(exportDatas);
         rvExportData.setLayoutManager(new LinearLayoutManager(this));
@@ -130,7 +146,6 @@ public class ExportDataActivity extends BaseActivity {
                         }
                         int length = value.length;
 
-
                         if (length >= 13) {
                             int index = 0;
                             while (index < length) {
@@ -179,6 +194,7 @@ public class ExportDataActivity extends BaseActivity {
                                 exportData.mac = mac;
                                 exportData.rawData = rawData;
                                 exportDatas.add(exportData);
+                                tvCount.setText(String.format("Count:%d", exportDatas.size()));
 
                                 storeString.append(String.format("Time:%s", time));
                                 storeString.append("\n");
@@ -186,8 +202,10 @@ public class ExportDataActivity extends BaseActivity {
                                 storeString.append("\n");
                                 storeString.append(String.format("RSSI:%s", rssiStr));
                                 storeString.append("\n");
-                                storeString.append(String.format("Raw Data:%s", rawData));
-                                storeString.append("\n");
+                                if (isSavedRawData == 1) {
+                                    storeString.append(String.format("Raw Data:%s", rawData));
+                                    storeString.append("\n");
+                                }
                                 storeString.append("\n");
                                 index += len;
                             }
@@ -307,15 +325,11 @@ public class ExportDataActivity extends BaseActivity {
                 if (!isSync) {
                     isSync = true;
                     tvEmpty.setEnabled(false);
-//                    showSyncingProgressDialog();
-//                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.openTrackedNotify());
                     MokoSupport.getInstance().enableStoreDataNotify();
                     Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
                     ivSync.startAnimation(animation);
                     tvSync.setText("Stop");
                 } else {
-//                    showSyncingProgressDialog();
-//                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.closeTrackedNotify());
                     MokoSupport.getInstance().disableStoreDataNotify();
                     isSync = false;
                     tvEmpty.setEnabled(true);
@@ -350,8 +364,8 @@ public class ExportDataActivity extends BaseActivity {
 
     private void back() {
         // 关闭通知
-//        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.closeTrackedNotify());
         MokoSupport.getInstance().disableStoreDataNotify();
+        MokoSupport.getInstance().exportDatas = exportDatas;
         finish();
     }
 

@@ -18,6 +18,7 @@ import android.text.TextUtils;
 
 import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
+import com.moko.support.entity.ExportData;
 import com.moko.support.entity.MokoCharacteristic;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
@@ -31,6 +32,7 @@ import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -554,4 +556,6 @@ public class MokoSupport implements MokoResponseCallback {
     public void disableStoreDataNotify() {
         mokoBleManager.disableStoreDataNotify();
     }
+
+    public ArrayList<ExportData> exportDatas;
 }

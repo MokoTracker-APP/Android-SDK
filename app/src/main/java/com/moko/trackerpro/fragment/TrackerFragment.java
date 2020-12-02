@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.task.OrderTask;
+import com.moko.support.utils.MokoUtils;
+import com.moko.trackerpro.AppConstants;
 import com.moko.trackerpro.R;
 import com.moko.trackerpro.activity.DeviceInfoActivity;
 import com.moko.trackerpro.activity.ExportDataActivity;
@@ -185,7 +187,7 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
                 startActivity(new Intent(getActivity(), FilterOptionsNewActivity.class));
                 break;
             case R.id.tv_tracked_data:
-                startActivity(new Intent(getActivity(), ExportDataActivity.class));
+                activity.getSavedCount();
                 break;
         }
     }
@@ -291,4 +293,11 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
 
+    public void gotoTrackedData(int savedCount, int leftCount) {
+        Intent intent = new Intent(getActivity(), ExportDataActivity.class);
+        intent.putExtra(AppConstants.EXTRA_KEY_SAVED_COUNT, savedCount);
+        intent.putExtra(AppConstants.EXTRA_KEY_LEFT_COUNT, leftCount);
+        intent.putExtra(AppConstants.EXTRA_KEY_SAVED_RAW_DATA, npvTrackingDataFormat.getValue());
+        startActivity(intent);
+    }
 }

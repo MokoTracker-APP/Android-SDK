@@ -172,6 +172,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                    MokoSupport.getInstance().exportDatas.clear();
                     showDisconnectDialog();
                 }
                 if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
@@ -346,7 +347,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     }
                                     break;
                                 case GET_SCAN_SETTINGS:
-                                    if (length == 1) {
+                                    if (length == 4) {
                                         byte[] scanWindowBytes = Arrays.copyOfRange(value, 4, 6);
                                         byte[] scanIntervalBytes = Arrays.copyOfRange(value, 6, 8);
                                         String scanWindowStr = String.valueOf(MokoUtils.toInt(scanWindowBytes));
@@ -390,6 +391,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     if (length == 1) {
                                         int dataFormat = value[4] & 0xFF;
                                         trackerFragment.setTrackingDataFormat(dataFormat);
+                                    }
+                                    break;
+                                case GET_SAVED_COUNT:
+                                    if (length == 4) {
+                                        byte[] savedCount = Arrays.copyOfRange(value, 4, 6);
+                                        byte[] leftCount = Arrays.copyOfRange(value, 6, 8);
+                                        trackerFragment.gotoTrackedData(MokoUtils.toInt(savedCount), MokoUtils.toInt(leftCount));
                                     }
                                     break;
                                 case SET_ADV_MOVE_CONDITION:
@@ -754,6 +762,11 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void powerOff() {
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.closePower());
+    }
+
+    public void getSavedCount() {
+        showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSavedCount());
     }
 
     public void chooseFirmwareFile() {
