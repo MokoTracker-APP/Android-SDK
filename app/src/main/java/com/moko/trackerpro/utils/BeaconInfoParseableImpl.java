@@ -52,6 +52,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         int battery = 0;
         boolean isOldFirmware = false;
         int available = 0;
+        boolean isCharging = false;
         Iterator iterator = map.keySet().iterator();
         if (iterator.hasNext()) {
             ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
@@ -80,6 +81,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
                     String binary = MokoUtils.hexString2binaryString(MokoUtils.byte2HexString(bytes[6]));
                     connectable = Integer.parseInt(binary.substring(7));
                     track = Integer.parseInt(binary.substring(6, 7));
+                    isCharging = Integer.parseInt(binary.substring(3, 4)) == 1;
                     battery = bytes[7] & 0xFF;
                     available = 100 - (bytes[8] & 0xFF);
                 } else {
@@ -109,6 +111,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             beaconInfo.scanTime = currentTime;
             beaconInfo.isOldFirmware = isOldFirmware;
             beaconInfo.available = available;
+            beaconInfo.isCharging = isCharging;
             double distance = MokoUtils.getDistance(deviceInfo.rssi, rssi_1m);
             String distanceDesc = "Unknown";
             if (distance <= 0.1) {
@@ -145,6 +148,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             beaconInfo.scanTime = SystemClock.elapsedRealtime();
             beaconInfo.isOldFirmware = isOldFirmware;
             beaconInfo.available = available;
+            beaconInfo.isCharging = isCharging;
             beaconInfoHashMap.put(deviceInfo.mac, beaconInfo);
         }
 

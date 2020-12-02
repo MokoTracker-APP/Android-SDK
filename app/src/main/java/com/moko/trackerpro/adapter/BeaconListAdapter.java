@@ -20,8 +20,14 @@ public class BeaconListAdapter extends BaseQuickAdapter<BeaconInfo, BaseViewHold
         helper.setText(R.id.tv_name, name);
         helper.setText(R.id.tv_mac, String.format("MAC:%s", item.mac));
         if (item.isOldFirmware) {
+            helper.setImageResource(R.id.iv_battery, R.drawable.battery_1);
             helper.setText(R.id.tv_battery, String.format("%dmV", item.battery));
         } else {
+            if (item.isCharging) {
+                helper.setImageResource(R.id.iv_battery, R.drawable.charging);
+            } else {
+                helper.setImageResource(R.id.iv_battery, R.drawable.battery_1);
+            }
             helper.setText(R.id.tv_battery, String.format("%d%%", item.battery));
         }
         final String intervalTime = item.intervalTime == 0 ? "<->N/A" : String.format("<->%dms", item.intervalTime);

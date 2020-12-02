@@ -17,4 +17,5 @@ public class BeaconInfo {
     public String proximity;
     public boolean isOldFirmware;
     public int available;
+    public boolean isCharging;
 }
