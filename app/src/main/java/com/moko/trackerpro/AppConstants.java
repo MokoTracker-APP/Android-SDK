@@ -31,6 +31,7 @@ public class AppConstants {
     public static final String EXTRA_KEY_DEVICE_CONNECTION_MODE = "EXTRA_KEY_DEVICE_CONNECTION_MODE";
     public static final String EXTRA_KEY_DEVICE_PASSWORD = "EXTRA_KEY_DEVICE_PASSWORD";
     public static final String EXTRA_KEY_DEVICE_TYPE = "EXTRA_KEY_DEVICE_TYPE";
+    public static final String EXTRA_KEY_DEVICE_BATTERY = "EXTRA_KEY_DEVICE_BATTERY";
     // request_code
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
     public static final int REQUEST_CODE_SET_UUID = 102;

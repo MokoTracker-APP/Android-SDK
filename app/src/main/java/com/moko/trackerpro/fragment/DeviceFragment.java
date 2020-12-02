@@ -81,8 +81,8 @@ public class DeviceFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void setBatteryValtage(int battery) {
-        tvBatteryVoltage.setText(String.format("%dmV", battery));
+    public void setBatteryValtage(int battery, int batteryPercent) {
+        tvBatteryVoltage.setText(String.format("%dmV/%d%%", battery, batteryPercent));
     }
 
     public void setMacAddress(String macAddress) {

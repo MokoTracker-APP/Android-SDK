@@ -95,6 +95,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private boolean mReceiverTag = false;
     private int disConnectType;
     public int deviceType;
+    public int mBattery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         setContentView(R.layout.activity_device_info);
         ButterKnife.bind(this);
         deviceType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, -1);
+        mBattery = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_BATTERY, 0);
         if (deviceType < 0) {
             finish();
             return;
@@ -253,7 +255,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         break;
                     case BATTERY:
                         int battery = MokoUtils.toInt(value);
-                        deviceFragment.setBatteryValtage(battery);
+                        deviceFragment.setBatteryValtage(battery, mBattery);
                         break;
                     case DEVICE_MODEL:
                         String productModel = new String(value);
@@ -265,6 +267,10 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         break;
                     case FIRMWARE_VERSION:
                         String firmwareVersion = new String(value);
+                        int begin = firmwareVersion.indexOf("-");
+                        if (begin > 0) {
+                            firmwareVersion = firmwareVersion.substring(begin + 1);
+                        }
                         deviceFragment.setFirmwareVersion(firmwareVersion);
                         break;
                     case HARDWARE_VERSION:
