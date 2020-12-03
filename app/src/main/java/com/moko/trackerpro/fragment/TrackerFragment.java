@@ -296,7 +296,6 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
         Intent intent = new Intent(getActivity(), ExportDataActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SAVED_COUNT, savedCount);
         intent.putExtra(AppConstants.EXTRA_KEY_LEFT_COUNT, leftCount);
-        intent.putExtra(AppConstants.EXTRA_KEY_SAVED_RAW_DATA, npvTrackingDataFormat.getValue());
         startActivity(intent);
     }
 }

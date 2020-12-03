@@ -16,12 +16,12 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.moko.trackerpro.R;
-import com.moko.trackerpro.activity.DeviceInfoActivity;
-import com.moko.trackerpro.entity.TxPowerEnum;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.task.OrderTask;
+import com.moko.trackerpro.R;
+import com.moko.trackerpro.activity.DeviceInfoActivity;
+import com.moko.trackerpro.entity.TxPowerEnum;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -55,4 +55,10 @@
         <item name="android:thumb">@drawable/seekbar_thumb</item>
         <item name="android:thumbOffset">0dp</item>
     </style>
+
+    <style name="SensitivitySeekbarStyle">
+        <item name="android:progressDrawable">@drawable/seekbar_progress_drawable_sensitivity</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:thumbOffset">0dp</item>
+    </style>
 </resources>

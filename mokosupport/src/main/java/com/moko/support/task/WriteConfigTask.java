@@ -47,8 +47,6 @@ public class WriteConfigTask extends OrderTask {
             case GET_FILTER_MAC:
             case GET_FILTER_NAME:
             case GET_FILTER_UUID:
-            case GET_FILTER_MAJOR:
-            case GET_FILTER_MINOR:
             case GET_FILTER_ADV_RAW_DATA:
             case GET_FILTER_ALL_DATA:
             case GET_SCAN_SETTINGS:

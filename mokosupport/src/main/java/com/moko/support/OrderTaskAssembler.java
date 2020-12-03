@@ -15,9 +15,9 @@ import com.moko.support.task.GetManufacturerTask;
 import com.moko.support.task.GetMeasurePowerTask;
 import com.moko.support.task.GetMinorTask;
 import com.moko.support.task.GetProductDateTask;
-import com.moko.support.task.GetTrackingStateTask;
 import com.moko.support.task.GetSoftwareVersionTask;
 import com.moko.support.task.GetTrackingNotifyTask;
+import com.moko.support.task.GetTrackingStateTask;
 import com.moko.support.task.GetTransmissionTask;
 import com.moko.support.task.GetUUIDTask;
 import com.moko.support.task.OrderTask;
@@ -29,8 +29,8 @@ import com.moko.support.task.SetMeasurePowerTask;
 import com.moko.support.task.SetMinorTask;
 import com.moko.support.task.SetPasswordTask;
 import com.moko.support.task.SetResetTask;
-import com.moko.support.task.SetTrackingStateTask;
 import com.moko.support.task.SetTrackingNotifyTask;
+import com.moko.support.task.SetTrackingStateTask;
 import com.moko.support.task.SetTransmissionTask;
 import com.moko.support.task.SetUUIDTask;
 import com.moko.support.task.WriteConfigTask;
@@ -229,18 +229,6 @@ public class OrderTaskAssembler {
     public static OrderTask getFilterUUID() {
         WriteConfigTask task = new WriteConfigTask();
         task.setData(ConfigKeyEnum.GET_FILTER_UUID);
-        return task;
-    }
-
-    public static OrderTask getFilterMajor() {
-        WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_FILTER_MAJOR);
-        return task;
-    }
-
-    public static OrderTask getFilterMinor() {
-        WriteConfigTask task = new WriteConfigTask();
-        task.setData(ConfigKeyEnum.GET_FILTER_MINOR);
         return task;
     }
 

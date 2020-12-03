@@ -144,7 +144,7 @@
         android:textColor="@color/black_333333"
         android:textSize="14sp"
         app:layout_constraintBaseline_toBaselineOf="@id/track"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="0.82"
         app:layout_constraintLeft_toLeftOf="@id/tv_name"
         app:layout_constraintRight_toRightOf="parent" />
 

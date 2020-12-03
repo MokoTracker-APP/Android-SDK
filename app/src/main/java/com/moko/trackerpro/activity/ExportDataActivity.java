@@ -23,6 +23,7 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 import com.moko.support.entity.ConfigKeyEnum;
+import com.moko.support.entity.ExportData;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -33,7 +34,6 @@ import com.moko.trackerpro.AppConstants;
 import com.moko.trackerpro.R;
 import com.moko.trackerpro.adapter.ExportDataListAdapter;
 import com.moko.trackerpro.dialog.AlertMessageDialog;
-import com.moko.support.entity.ExportData;
 import com.moko.trackerpro.utils.ToastUtils;
 import com.moko.trackerpro.utils.Utils;
 
@@ -73,7 +73,6 @@ public class ExportDataActivity extends BaseActivity {
     private boolean mIsShown;
     private boolean isSync;
     private ExportDataListAdapter adapter;
-    private int isSavedRawData;
 
 
     @Override
@@ -84,7 +83,6 @@ public class ExportDataActivity extends BaseActivity {
 
         int savedCount = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SAVED_COUNT, 0);
         int leftCount = getIntent().getIntExtra(AppConstants.EXTRA_KEY_LEFT_COUNT, 0);
-        isSavedRawData = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SAVED_RAW_DATA, 0);
         int sum = savedCount + leftCount;
         tvSum.setText(String.format("Sum:%d/%d", savedCount, sum));
         exportDatas = MokoSupport.getInstance().exportDatas;
@@ -94,7 +92,6 @@ public class ExportDataActivity extends BaseActivity {
             exportDatas = new ArrayList<>();
         }
         adapter = new ExportDataListAdapter();
-        adapter.setSavedRawData(isSavedRawData);
         adapter.openLoadAnimation();
         adapter.replaceData(exportDatas);
         rvExportData.setLayoutManager(new LinearLayoutManager(this));
@@ -108,12 +105,6 @@ public class ExportDataActivity extends BaseActivity {
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
             MokoSupport.getInstance().enableBluetooth();
-        } else {
-            MokoSupport.getInstance().enableStoreDataNotify();
-            Animation animation = AnimationUtils.loadAnimation(ExportDataActivity.this, R.anim.rotate_refresh);
-            ivSync.startAnimation(animation);
-            tvSync.setText("Stop");
-            isSync = true;
         }
     }
 
@@ -202,7 +193,7 @@ public class ExportDataActivity extends BaseActivity {
                                 storeString.append("\n");
                                 storeString.append(String.format("RSSI:%s", rssiStr));
                                 storeString.append("\n");
-                                if (isSavedRawData == 1) {
+                                if (!TextUtils.isEmpty(rawData)) {
                                     storeString.append(String.format("Raw Data:%s", rawData));
                                     storeString.append("\n");
                                 }

@@ -8,8 +8,8 @@ android {
         applicationId "com.moko.trackerpro"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.0.9"
+        versionCode 1
+        versionName "1.0.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -46,9 +46,9 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 def formatedDate = new Date().format("yyyyMMddHHmm")
-                def apkFileName = "Tracker_${defaultConfig.versionName}_${formatedDate}.apk"
+                def apkFileName = "MokoTracker+_${defaultConfig.versionName}_${formatedDate}.apk"
                 if (outputFile.name.contains('debug')) {
-                    apkFileName = "Tracker_${defaultConfig.versionName}_${formatedDate}_debug.apk"
+                    apkFileName = "MokoTracker+_${defaultConfig.versionName}_${formatedDate}_debug.apk"
                 }
                 outputFileName = apkFileName
             }

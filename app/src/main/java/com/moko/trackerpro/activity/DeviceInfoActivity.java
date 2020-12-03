@@ -132,7 +132,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             List<OrderTask> orderTasks = new ArrayList<>();
             // sync time after connect success;
             orderTasks.add(OrderTaskAssembler.setTime());
-            orderTasks.add(OrderTaskAssembler.shake());
             orderTasks.add(OrderTaskAssembler.getDeviceName());
             orderTasks.add(OrderTaskAssembler.getUUID());
             orderTasks.add(OrderTaskAssembler.getMajor());

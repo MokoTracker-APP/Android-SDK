@@ -4,9 +4,9 @@ import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.moko.trackerpro.utils.IOUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.log.LogModule;
+import com.moko.trackerpro.utils.IOUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

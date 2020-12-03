@@ -71,7 +71,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
                 } else {
                     return null;
                 }
-            } else if (parcelUuid.toString().startsWith("0000ff03")) {
+            } else if (parcelUuid.toString().startsWith("0000ff04")) {
                 byte[] bytes = map.get(parcelUuid);
                 if (bytes != null && bytes.length >= 9) {
                     major = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 0, 2)));
