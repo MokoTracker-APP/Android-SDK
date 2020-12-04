@@ -108,14 +108,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             finish();
             return;
         }
+        fragmentManager = getFragmentManager();
+        initFragment();
         if (deviceType == 4 || deviceType == 6) {
             advFragment.disableTrigger();
             trackerFragment.disableTrigger();
             settingFragment.disableTrigger();
         }
-        fragmentManager = getFragmentManager();
-        initFragment();
-
         radioBtnAdv.setChecked(true);
         tvTitle.setText(R.string.title_advertiser);
         rgOptions.setOnCheckedChangeListener(this);
@@ -171,7 +170,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-                    MokoSupport.getInstance().exportDatas.clear();
+                    if (MokoSupport.getInstance().exportDatas != null)
+                        MokoSupport.getInstance().exportDatas.clear();
                     showDisconnectDialog();
                 }
                 if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
