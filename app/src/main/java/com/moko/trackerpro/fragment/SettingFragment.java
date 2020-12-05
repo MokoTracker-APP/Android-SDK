@@ -20,35 +20,35 @@ import com.moko.trackerpro.dialog.TriggerSensitivityDialog;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SettingFragment extends Fragment {
     private static final String TAG = SettingFragment.class.getSimpleName();
-    @Bind(R.id.tv_change_password)
+    @BindView(R.id.tv_change_password)
     TextView tvChangePassword;
-    @Bind(R.id.tv_factory_reset)
+    @BindView(R.id.tv_factory_reset)
     TextView tvFactoryReset;
-    @Bind(R.id.tv_update_firmware)
+    @BindView(R.id.tv_update_firmware)
     TextView tvUpdateFirmware;
-    @Bind(R.id.tv_trigger_sensitivity)
+    @BindView(R.id.tv_trigger_sensitivity)
     TextView tvTriggerSensitivity;
-    @Bind(R.id.iv_connectable)
+    @BindView(R.id.iv_connectable)
     ImageView ivConnectable;
-    @Bind(R.id.iv_button_power)
+    @BindView(R.id.iv_button_power)
     ImageView ivButtonPower;
-    @Bind(R.id.tv_button_power)
+    @BindView(R.id.tv_button_power)
     TextView tvButtonPower;
-    @Bind(R.id.iv_power_off)
+    @BindView(R.id.iv_power_off)
     ImageView ivPowerOff;
-    @Bind(R.id.tv_connectable)
+    @BindView(R.id.tv_connectable)
     TextView tvConnectable;
-    @Bind(R.id.iv_connection_notification)
+    @BindView(R.id.iv_connection_notification)
     ImageView ivConnectionNotification;
-    @Bind(R.id.tv_button_reset)
+    @BindView(R.id.tv_button_reset)
     TextView tvButtonReset;
-    @Bind(R.id.iv_button_reset)
+    @BindView(R.id.iv_button_reset)
     ImageView ivButtonReset;
 
 
@@ -90,7 +90,6 @@ public class SettingFragment extends Fragment {
     public void onDestroyView() {
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override

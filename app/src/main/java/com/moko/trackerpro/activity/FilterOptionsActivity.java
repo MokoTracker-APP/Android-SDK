@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -51,57 +51,57 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
 
     public static final String UUID_PATTERN = "[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}";
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
-    @Bind(R.id.sb_rssi_filter)
+    @BindView(R.id.sb_rssi_filter)
     SeekBar sbRssiFilter;
-    @Bind(R.id.tv_rssi_filter_value)
+    @BindView(R.id.tv_rssi_filter_value)
     TextView tvRssiFilterValue;
-    @Bind(R.id.tv_rssi_filter_tips)
+    @BindView(R.id.tv_rssi_filter_tips)
     TextView tvRssiFilterTips;
-    @Bind(R.id.iv_adv_data_filter)
+    @BindView(R.id.iv_adv_data_filter)
     ImageView ivAdvDataFilter;
-    @Bind(R.id.iv_mac_address)
+    @BindView(R.id.iv_mac_address)
     ImageView ivMacAddress;
-    @Bind(R.id.et_mac_address)
+    @BindView(R.id.et_mac_address)
     EditText etMacAddress;
-    @Bind(R.id.iv_adv_name)
+    @BindView(R.id.iv_adv_name)
     ImageView ivAdvName;
-    @Bind(R.id.et_adv_name)
+    @BindView(R.id.et_adv_name)
     EditText etAdvName;
-    @Bind(R.id.iv_ibeacon_uuid)
+    @BindView(R.id.iv_ibeacon_uuid)
     ImageView ivIbeaconUuid;
-    @Bind(R.id.et_ibeacon_uuid)
+    @BindView(R.id.et_ibeacon_uuid)
     EditText etIbeaconUuid;
-    @Bind(R.id.iv_ibeacon_major)
+    @BindView(R.id.iv_ibeacon_major)
     ImageView ivIbeaconMajor;
-    @Bind(R.id.iv_ibeacon_minor)
+    @BindView(R.id.iv_ibeacon_minor)
     ImageView ivIbeaconMinor;
-    @Bind(R.id.iv_raw_adv_data)
+    @BindView(R.id.iv_raw_adv_data)
     ImageView ivRawAdvData;
-    @Bind(R.id.et_raw_adv_data)
+    @BindView(R.id.et_raw_adv_data)
     EditText etRawAdvData;
-    @Bind(R.id.et_ibeacon_major_min)
+    @BindView(R.id.et_ibeacon_major_min)
     EditText etIbeaconMajorMin;
-    @Bind(R.id.et_ibeacon_major_max)
+    @BindView(R.id.et_ibeacon_major_max)
     EditText etIbeaconMajorMax;
-    @Bind(R.id.ll_ibeacon_major)
+    @BindView(R.id.ll_ibeacon_major)
     LinearLayout llIbeaconMajor;
-    @Bind(R.id.et_ibeacon_minor_min)
+    @BindView(R.id.et_ibeacon_minor_min)
     EditText etIbeaconMinorMin;
-    @Bind(R.id.et_ibeacon_minor_max)
+    @BindView(R.id.et_ibeacon_minor_max)
     EditText etIbeaconMinorMax;
-    @Bind(R.id.ll_ibeacon_minor)
+    @BindView(R.id.ll_ibeacon_minor)
     LinearLayout llIbeaconMinor;
-    @Bind(R.id.cb_mac_address)
+    @BindView(R.id.cb_mac_address)
     CheckBox cbMacAddress;
-    @Bind(R.id.cb_adv_name)
+    @BindView(R.id.cb_adv_name)
     CheckBox cbAdvName;
-    @Bind(R.id.cb_ibeacon_uuid)
+    @BindView(R.id.cb_ibeacon_uuid)
     CheckBox cbIbeaconUuid;
-    @Bind(R.id.cb_ibeacon_major)
+    @BindView(R.id.cb_ibeacon_major)
     CheckBox cbIbeaconMajor;
-    @Bind(R.id.cb_ibeacon_minor)
+    @BindView(R.id.cb_ibeacon_minor)
     CheckBox cbIbeaconMinor;
-    @Bind(R.id.cb_raw_adv_data)
+    @BindView(R.id.cb_raw_adv_data)
     CheckBox cbRawAdvData;
     private boolean mReceiverTag = false;
 

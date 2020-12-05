@@ -7,23 +7,23 @@ import android.widget.TextView;
 
 import com.moko.trackerpro.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class LowBatteryDialog extends BaseDialog implements SeekBar.OnSeekBarChangeListener {
 
 
-    @Bind(R.id.sb_low_battery_20)
+    @BindView(R.id.sb_low_battery_20)
     SeekBar sbLowBattery20;
-    @Bind(R.id.tv_low_battery_20_value)
+    @BindView(R.id.tv_low_battery_20_value)
     TextView tvLowBattery20Value;
-    @Bind(R.id.sb_low_battery_10)
+    @BindView(R.id.sb_low_battery_10)
     SeekBar sbLowBattery10;
-    @Bind(R.id.tv_low_battery_10_value)
+    @BindView(R.id.tv_low_battery_10_value)
     TextView tvLowBattery10Value;
-    @Bind(R.id.sb_low_battery_5)
+    @BindView(R.id.sb_low_battery_5)
     SeekBar sbLowBattery5;
-    @Bind(R.id.tv_low_battery_5_value)
+    @BindView(R.id.tv_low_battery_5_value)
     TextView tvLowBattery5Value;
 
     private int lowBattery20;

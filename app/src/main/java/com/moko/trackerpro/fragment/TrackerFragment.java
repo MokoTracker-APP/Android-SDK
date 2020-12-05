@@ -3,7 +3,7 @@ package com.moko.trackerpro.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,40 +29,40 @@ import com.moko.trackerpro.activity.FilterOptionsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 
 public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChangeListener, NumberPickerView.OnValueChangeListener {
     private static final String TAG = TrackerFragment.class.getSimpleName();
-    @Bind(R.id.sb_tracking_interval)
+    @BindView(R.id.sb_tracking_interval)
     SeekBar sbTrackingInterval;
-    @Bind(R.id.tv_tracking_interval_value)
+    @BindView(R.id.tv_tracking_interval_value)
     TextView tvTrackingIntervalValue;
-    @Bind(R.id.tv_tracking_interval_tips)
+    @BindView(R.id.tv_tracking_interval_tips)
     TextView tvTrackingIntervalTips;
-    @Bind(R.id.npv_tracking_notify)
+    @BindView(R.id.npv_tracking_notify)
     NumberPickerView npvTrackingNotify;
-    @Bind(R.id.npv_vibrations_number)
+    @BindView(R.id.npv_vibrations_number)
     NumberPickerView npvVibrationsNumber;
-    @Bind(R.id.rl_vibrations_number)
+    @BindView(R.id.rl_vibrations_number)
     RelativeLayout rlVibrationsNumber;
-    @Bind(R.id.et_scan_window)
+    @BindView(R.id.et_scan_window)
     EditText etScanWindow;
-    @Bind(R.id.et_scan_interval)
+    @BindView(R.id.et_scan_interval)
     EditText etScanInterval;
-    @Bind(R.id.et_tracking_trigger)
+    @BindView(R.id.et_tracking_trigger)
     EditText etTrackingTrigger;
-    @Bind(R.id.tv_tracking_trigger_tips)
+    @BindView(R.id.tv_tracking_trigger_tips)
     TextView tvTrackingTriggerTips;
-    @Bind(R.id.cl_tracking)
+    @BindView(R.id.cl_tracking)
     ConstraintLayout clTracking;
-    @Bind(R.id.iv_tracking)
+    @BindView(R.id.iv_tracking)
     ImageView ivTracking;
-    @Bind(R.id.npv_tracking_data_format)
+    @BindView(R.id.npv_tracking_data_format)
     NumberPickerView npvTrackingDataFormat;
-    @Bind(R.id.cl_tracking_trigger)
+    @BindView(R.id.cl_tracking_trigger)
     ConstraintLayout clTrackingTrigger;
 
     private DeviceInfoActivity activity;
@@ -161,7 +161,6 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
     public void onDestroyView() {
         Log.i(TAG, "onDestroyView: ");
         super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override
