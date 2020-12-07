@@ -656,6 +656,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         // setting
         orderTasks.add(OrderTaskAssembler.getButtonPower());
         orderTasks.add(OrderTaskAssembler.getConnectionMode());
+        orderTasks.add(OrderTaskAssembler.getMacAddress());
         orderTasks.add(OrderTaskAssembler.getConnectNotification());
         orderTasks.add(OrderTaskAssembler.getLowBattery());
         if (deviceType != 4 && deviceType != 6) {
@@ -682,8 +683,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (deviceType != 4 && deviceType != 6) {
             orderTasks.add(OrderTaskAssembler.getTrackingTrigger());
         }
-        orderTasks.add(OrderTaskAssembler.getVibrationNumber());
         orderTasks.add(OrderTaskAssembler.getTrackingNotify());
+        orderTasks.add(OrderTaskAssembler.getVibrationNumber());
         orderTasks.add(OrderTaskAssembler.getTrackingInterval());
         orderTasks.add(OrderTaskAssembler.getSavedRawData());
 

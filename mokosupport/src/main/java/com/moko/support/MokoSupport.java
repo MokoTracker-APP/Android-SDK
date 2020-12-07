@@ -12,8 +12,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.moko.support.callback.MokoResponseCallback;
@@ -40,6 +38,8 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import no.nordicsemi.android.ble.BleManagerCallbacks;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanFilter;
@@ -260,41 +260,46 @@ public class MokoSupport implements MokoResponseCallback {
         if (mQueue.isEmpty()) {
             return;
         }
-        final OrderTask orderTask = mQueue.peek();
-        if (mBluetoothGatt == null) {
-            LogModule.i("executeTask : BluetoothGatt is null");
-            return;
-        }
-        if (orderTask == null) {
-            LogModule.i("executeTask : orderTask is null");
-            return;
-        }
-        if (mCharacteristicMap == null || mCharacteristicMap.isEmpty()) {
-            LogModule.i("executeTask : characteristicMap is null");
-            disConnectBle();
-            return;
-        }
-        final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
-        if (mokoCharacteristic == null) {
-            LogModule.i("executeTask : mokoCharacteristic is null");
-            return;
-        }
-        if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_READ) {
-            sendReadOrder(orderTask, mokoCharacteristic);
-        }
-        if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_WRITE) {
-            sendWriteOrder(orderTask, mokoCharacteristic);
-        }
-        if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE) {
-            sendWriteNoResponseOrder(orderTask, mokoCharacteristic);
-        }
-        if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_NOTIFY) {
-            sendNotifyOrder(orderTask, mokoCharacteristic);
-        }
-        if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_DISABLE_NOTIFY) {
-            sendDisableNotifyOrder(orderTask, mokoCharacteristic);
-        }
-        timeoutHandler(orderTask);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final OrderTask orderTask = mQueue.peek();
+                if (mBluetoothGatt == null) {
+                    LogModule.i("executeTask : BluetoothGatt is null");
+                    return;
+                }
+                if (orderTask == null) {
+                    LogModule.i("executeTask : orderTask is null");
+                    return;
+                }
+                if (mCharacteristicMap == null || mCharacteristicMap.isEmpty()) {
+                    LogModule.i("executeTask : characteristicMap is null");
+                    disConnectBle();
+                    return;
+                }
+                final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
+                if (mokoCharacteristic == null) {
+                    LogModule.i("executeTask : mokoCharacteristic is null");
+                    return;
+                }
+                if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_READ) {
+                    sendReadOrder(orderTask, mokoCharacteristic);
+                }
+                if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_WRITE) {
+                    sendWriteOrder(orderTask, mokoCharacteristic);
+                }
+                if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE) {
+                    sendWriteNoResponseOrder(orderTask, mokoCharacteristic);
+                }
+                if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_NOTIFY) {
+                    sendNotifyOrder(orderTask, mokoCharacteristic);
+                }
+                if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_DISABLE_NOTIFY) {
+                    sendDisableNotifyOrder(orderTask, mokoCharacteristic);
+                }
+                timeoutHandler(orderTask);
+            }
+        }, 100);
     }
 
     public synchronized boolean isSyncData() {
@@ -523,11 +528,11 @@ public class MokoSupport implements MokoResponseCallback {
         task.orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         task.response.responseValue = value;
         mQueue.poll();
+        executeTask();
         OrderTaskResponseEvent event = new OrderTaskResponseEvent();
         event.setAction(MokoConstants.ACTION_ORDER_RESULT);
         event.setResponse(task.response);
         EventBus.getDefault().post(event);
-        executeTask();
     }
 
     public void onOpenNotifyTimeout() {

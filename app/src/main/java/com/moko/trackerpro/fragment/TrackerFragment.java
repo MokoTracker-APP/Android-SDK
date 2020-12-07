@@ -3,7 +3,6 @@ package com.moko.trackerpro.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,6 +28,7 @@ import com.moko.trackerpro.activity.FilterOptionsActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -209,6 +209,8 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
                 return false;
             int scanInterval = Integer.parseInt(scanIntervalStr);
             if (scanInterval < 4 || scanInterval > 16384)
+                return false;
+            if (scanWindow > scanInterval)
                 return false;
         }
         return true;
