@@ -170,6 +170,8 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
     }
 
     public void disableTrigger() {
+        if (clTrackingTrigger == null)
+            return;
         clTrackingTrigger.setVisibility(View.GONE);
     }
 

@@ -13,8 +13,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -58,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.IdRes;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -110,11 +110,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         }
         fragmentManager = getFragmentManager();
         initFragment();
-        if (deviceType == 4 || deviceType == 6) {
-            advFragment.disableTrigger();
-            trackerFragment.disableTrigger();
-            settingFragment.disableTrigger();
-        }
         radioBtnAdv.setChecked(true);
         tvTitle.setText(R.string.title_advertiser);
         rgOptions.setOnCheckedChangeListener(this);
@@ -143,6 +138,16 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             }
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
+        tvTitle.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (deviceType == 4 || deviceType == 6) {
+                    advFragment.disableTrigger();
+                    trackerFragment.disableTrigger();
+                    settingFragment.disableTrigger();
+                }
+            }
+        }, 500);
     }
 
     private void initFragment() {

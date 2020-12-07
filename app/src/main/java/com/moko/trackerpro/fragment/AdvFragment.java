@@ -2,7 +2,6 @@ package com.moko.trackerpro.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -257,6 +257,8 @@ public class AdvFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     }
 
     public void disableTrigger() {
+        if (advTrigger == null || ivAdvTrigger == null)
+            return;
         advTrigger.setVisibility(View.GONE);
         ivAdvTrigger.setVisibility(View.GONE);
     }

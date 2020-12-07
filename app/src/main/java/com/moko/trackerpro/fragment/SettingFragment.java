@@ -276,6 +276,8 @@ public class SettingFragment extends Fragment {
     }
 
     public void disableTrigger() {
+        if (tvTriggerSensitivity == null)
+            return;
         tvTriggerSensitivity.setVisibility(View.GONE);
     }
 
