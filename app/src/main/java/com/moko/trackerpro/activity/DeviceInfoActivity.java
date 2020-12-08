@@ -215,6 +215,15 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 }
             }
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderType orderType = response.orderType;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (orderType) {
+                    case RESET:
+                        showResetErrorDialog();
+                        break;
+                }
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissSyncProgressDialog();
@@ -438,8 +447,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             dialog.show(getSupportFragmentManager());
         } else if (disConnectType == 2) {
             AlertMessageDialog dialog = new AlertMessageDialog();
-            dialog.setTitle("Factory Reset");
-            dialog.setMessage("Factory reset successfully!Please reconnect the device.");
+            dialog.setTitle("Reset");
+            dialog.setMessage("Reset successfully!Please reconnect the device.");
             dialog.setConfirm("OK");
             dialog.setCancelGone();
             dialog.setOnAlertConfirmListener(() -> {
@@ -481,6 +490,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 dialog.show(getSupportFragmentManager());
             }
         }
+    }
+
+    private void showResetErrorDialog() {
+        AlertMessageDialog dialog = new AlertMessageDialog();
+        dialog.setMessage("Password is incorrect ! Please try again.");
+        dialog.setConfirm("OK");
+        dialog.setCancelGone();
+        dialog.show(getSupportFragmentManager());
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

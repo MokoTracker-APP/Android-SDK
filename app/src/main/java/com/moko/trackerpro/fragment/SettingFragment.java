@@ -182,7 +182,6 @@ public class SettingFragment extends Fragment {
             dialog.setMessage("Are you sure to make the device connectable？");
         }
         dialog.setConfirm("OK");
-        dialog.setCancelGone();
         dialog.setOnAlertConfirmListener(() -> {
             int value = !connectState ? 1 : 0;
             activity.changeConnectState(value);
@@ -199,7 +198,6 @@ public class SettingFragment extends Fragment {
             dialog.setMessage("If you Enable Button Off  function, you can turn off the beacon power with the button.");
         }
         dialog.setConfirm("OK");
-        dialog.setCancelGone();
         dialog.setOnAlertConfirmListener(() -> {
             int value = !buttonPowerState ? 1 : 0;
             activity.changeButtonPowerState(value);
@@ -216,7 +214,6 @@ public class SettingFragment extends Fragment {
             dialog.setMessage("If you Enable Button Reset  function, you can Reset the beacon power with the button.");
         }
         dialog.setConfirm("OK");
-        dialog.setCancelGone();
         dialog.setOnAlertConfirmListener(() -> {
             int value = !buttonResetState ? 1 : 0;
             activity.changeButtonResetState(value);
@@ -229,7 +226,6 @@ public class SettingFragment extends Fragment {
         dialog.setTitle("Warning!");
         dialog.setMessage("Are you sure to turn off the device? Please make sure the device has a button to turn on!");
         dialog.setConfirm("OK");
-        dialog.setCancelGone();
         dialog.setOnAlertConfirmListener(() -> {
             activity.powerOff();
         });

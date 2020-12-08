@@ -10,12 +10,6 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -68,6 +62,12 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private Animation animation = null;
     private String mDeviceMac;
     private String mDeviceName;
+    private boolean isPasswordError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -416,7 +417,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             dismissLoadingMessageDialog();
             if (isUpgrade)
                 return;
-            ToastUtils.showToast(MainActivity.this, "Disconnected");
+            if (isPasswordError) {
+                isPasswordError = false;
+            } else {
+                ToastUtils.showToast(MainActivity.this, "Disconnected");
+            }
             if (animation == null) {
                 startScan();
             }
@@ -494,6 +499,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             MokoSupport.getInstance().sendOrder(orderTask);
                         }
                         if (1 == (value[0] & 0xFF)) {
+                            isPasswordError = true;
                             ToastUtils.showToast(MainActivity.this, "Password Error");
                             MokoSupport.getInstance().disConnectBle();
                         }
