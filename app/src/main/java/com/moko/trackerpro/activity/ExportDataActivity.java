@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -46,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -238,6 +238,17 @@ public class ExportDataActivity extends BaseActivity {
                                         ToastUtils.showToast(ExportDataActivity.this, "Failed");
                                     }
                                     break;
+                                case GET_SAVED_COUNT:
+                                    if (length == 4) {
+                                        byte[] savedCount = Arrays.copyOfRange(value, 4, 6);
+                                        byte[] leftCount = Arrays.copyOfRange(value, 6, 8);
+                                        int saved = MokoUtils.toInt(savedCount);
+                                        int left = MokoUtils.toInt(leftCount);
+                                        int sum = saved + left;
+                                        tvSum.setText(String.format("Sum:%d/%d", savedCount, sum));
+                                        tvCount.setText("Count:N/A");
+                                    }
+                                    break;
                             }
                         }
                         break;
@@ -308,7 +319,7 @@ public class ExportDataActivity extends BaseActivity {
                 dialog.setMessage("Are you sure to empty the saved tracked datas?");
                 dialog.setOnAlertConfirmListener(() -> {
                     showSyncingProgressDialog();
-                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.deleteTrackedData());
+                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.deleteTrackedData(), OrderTaskAssembler.getSavedCount());
                 });
                 dialog.show(getSupportFragmentManager());
                 break;

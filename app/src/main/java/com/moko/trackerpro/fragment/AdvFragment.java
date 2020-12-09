@@ -334,10 +334,6 @@ public class AdvFragment extends Fragment implements SeekBar.OnSeekBarChangeList
         int advInterval = Integer.parseInt(advIntervalStr);
         orderTasks.add(OrderTaskAssembler.setAdvInterval(advInterval));
 
-        int rssi1mProgress = sbRssi1m.getProgress();
-        int rssi1m = rssi1mProgress - 127;
-        orderTasks.add(OrderTaskAssembler.setMeasurePower(rssi1m));
-
         int txPowerProgress = sbTxPower.getProgress();
         int txPower = TxPowerEnum.fromOrdinal(txPowerProgress).getTxPower();
         orderTasks.add(OrderTaskAssembler.setTransmission(txPower));
@@ -348,6 +344,10 @@ public class AdvFragment extends Fragment implements SeekBar.OnSeekBarChangeList
         } else {
             orderTasks.add(OrderTaskAssembler.setAdvMoveCondition(0));
         }
+
+        int rssi1mProgress = sbRssi1m.getProgress();
+        int rssi1m = rssi1mProgress - 127;
+        orderTasks.add(OrderTaskAssembler.setMeasurePower(rssi1m));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 }

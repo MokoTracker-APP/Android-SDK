@@ -97,4 +97,8 @@ public class LogModule {
         }
         return file;
     }
+
+    public static String getLogPath() {
+        return PATH_LOGCAT;
+    }
 }

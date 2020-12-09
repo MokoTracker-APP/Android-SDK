@@ -96,6 +96,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private int disConnectType;
     public int deviceType;
     public int mBattery;
+    private boolean isSaveFailed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,14 +220,35 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 OrderType orderType = response.orderType;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
+                if (responseType != OrderTask.RESPONSE_TYPE_WRITE)
+                    return;
                 switch (orderType) {
                     case RESET:
                         showResetErrorDialog();
                         break;
+                    case DEVICE_NAME:
+                    case UUID:
+                    case MAJOR:
+                    case MINOR:
+                    case ADV_INTERVAL:
+                    case MEASURE_POWER:
+                    case TRANSMISSION:
+                    case TRACKING_NOTIFY:
+                    case TRACKING_STATE:
+                    case CONNECTION_MODE:
+                    case WRITE_CONFIG:
+                        isSaveFailed = true;
+                        break;
                 }
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                dismissSyncProgressDialog();
+                tvTitle.postDelayed(() -> {
+                    if (isSaveFailed) {
+                        isSaveFailed = false;
+                        ToastUtils.showToast(this, "Saved failed");
+                    }
+                    dismissSyncProgressDialog();
+                }, 500);
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
@@ -256,8 +278,19 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         advFragment.setAdvInterval(advInterval);
                         break;
                     case MEASURE_POWER:
-                        int rssi_1m = value[0];
-                        advFragment.setMeasurePower(rssi_1m);
+                        if (responseType == OrderTask.RESPONSE_TYPE_READ) {
+                            int rssi_1m = value[0];
+                            advFragment.setMeasurePower(rssi_1m);
+                        }
+                        if (responseType == OrderTask.RESPONSE_TYPE_WRITE) {
+                            if (isSaveFailed)
+                                return;
+                            AlertMessageDialog dialog = new AlertMessageDialog();
+                            dialog.setMessage("Saved Successfully！");
+                            dialog.setConfirm("OK");
+                            dialog.setCancelGone();
+                            dialog.show(getSupportFragmentManager());
+                        }
                         break;
                     case TRANSMISSION:
                         int txPower = value[0];
@@ -414,10 +447,13 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     }
                                     break;
                                 case SET_ADV_MOVE_CONDITION:
-                                case SET_SAVED_RAW_DATA:
                                     // EB 31 00 00
+                                    break;
+                                case SET_SAVED_RAW_DATA:
                                     // EB 32 00 00
                                     if (length == 0) {
+                                        if (isSaveFailed)
+                                            return;
                                         AlertMessageDialog dialog = new AlertMessageDialog();
                                         dialog.setMessage("Saved Successfully！");
                                         dialog.setConfirm("OK");

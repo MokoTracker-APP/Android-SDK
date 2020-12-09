@@ -109,6 +109,8 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
 
     private boolean savedParamsError;
 
+    private boolean isSaveFailed;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,9 +219,26 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
             if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
             }
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderType orderType = response.orderType;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                if (responseType != OrderTask.RESPONSE_TYPE_WRITE)
+                    return;
+                switch (orderType) {
+                    case WRITE_CONFIG:
+                        isSaveFailed = true;
+                        break;
+                }
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                dismissSyncProgressDialog();
+                sbRssiFilter.postDelayed(() -> {
+                    if (isSaveFailed) {
+                        isSaveFailed = false;
+                        ToastUtils.showToast(this, "Saved failed");
+                    }
+                    dismissSyncProgressDialog();
+                }, 500);
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
@@ -369,8 +388,10 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                                         savedParamsError = true;
                                     }
                                     if (savedParamsError) {
-                                        ToastUtils.showToast(FilterOptionsActivity.this, "Opps！Save failed. Please check the input characters and try again.");
+                                        ToastUtils.showToast(FilterOptionsActivity.this, "Save failed!");
                                     } else {
+                                        if (isSaveFailed)
+                                            return;
                                         AlertMessageDialog dialog = new AlertMessageDialog();
                                         dialog.setMessage("Saved Successfully！");
                                         dialog.setConfirm("OK");
