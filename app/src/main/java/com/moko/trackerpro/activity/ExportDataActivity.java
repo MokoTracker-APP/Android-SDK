@@ -1,7 +1,6 @@
 package com.moko.trackerpro.activity;
 
 
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -32,6 +30,7 @@ import com.moko.trackerpro.AppConstants;
 import com.moko.trackerpro.R;
 import com.moko.trackerpro.adapter.ExportDataListAdapter;
 import com.moko.trackerpro.dialog.AlertMessageDialog;
+import com.moko.trackerpro.dialog.LoadingMessageDialog;
 import com.moko.trackerpro.utils.ToastUtils;
 import com.moko.trackerpro.utils.Utils;
 
@@ -234,18 +233,23 @@ public class ExportDataActivity extends BaseActivity {
                                         adapter.replaceData(exportDatas);
                                         tvExport.setEnabled(false);
                                         ToastUtils.showToast(ExportDataActivity.this, "Empty success!");
+                                        tvEmpty.postDelayed(() -> {
+                                            showSyncingProgressDialog();
+                                            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSavedCount());
+                                        }, 500);
                                     } else {
                                         ToastUtils.showToast(ExportDataActivity.this, "Failed");
                                     }
                                     break;
                                 case GET_SAVED_COUNT:
+                                    dismissSyncProgressDialog();
                                     if (length == 4) {
                                         byte[] savedCount = Arrays.copyOfRange(value, 4, 6);
                                         byte[] leftCount = Arrays.copyOfRange(value, 6, 8);
                                         int saved = MokoUtils.toInt(savedCount);
                                         int left = MokoUtils.toInt(leftCount);
                                         int sum = saved + left;
-                                        tvSum.setText(String.format("Sum:%d/%d", savedCount, sum));
+                                        tvSum.setText(String.format("Sum:%d/%d", saved, sum));
                                         tvCount.setText("Count:N/A");
                                     }
                                     break;
@@ -287,24 +291,17 @@ public class ExportDataActivity extends BaseActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    private ProgressDialog syncingDialog;
+    private LoadingMessageDialog mLoadingMessageDialog;
 
     public void showSyncingProgressDialog() {
-        syncingDialog = new ProgressDialog(this);
-        syncingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        syncingDialog.setCanceledOnTouchOutside(false);
-        syncingDialog.setCancelable(false);
-        syncingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        syncingDialog.setMessage("Syncing...");
-        if (!isFinishing() && syncingDialog != null && !syncingDialog.isShowing()) {
-            syncingDialog.show();
-        }
+        mLoadingMessageDialog = new LoadingMessageDialog();
+        mLoadingMessageDialog.setMessage("Syncing..");
+        mLoadingMessageDialog.show(getSupportFragmentManager());
     }
 
     public void dismissSyncProgressDialog() {
-        if (!isFinishing() && syncingDialog != null && syncingDialog.isShowing()) {
-            syncingDialog.dismiss();
-        }
+        if (mLoadingMessageDialog != null)
+            mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
     @OnClick({R.id.tv_back, R.id.tv_empty, R.id.ll_sync, R.id.tv_export})
@@ -319,7 +316,7 @@ public class ExportDataActivity extends BaseActivity {
                 dialog.setMessage("Are you sure to empty the saved tracked datas?");
                 dialog.setOnAlertConfirmListener(() -> {
                     showSyncingProgressDialog();
-                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.deleteTrackedData(), OrderTaskAssembler.getSavedCount());
+                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.deleteTrackedData());
                 });
                 dialog.show(getSupportFragmentManager());
                 break;

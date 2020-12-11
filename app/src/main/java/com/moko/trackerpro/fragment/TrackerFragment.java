@@ -194,12 +194,14 @@ public class TrackerFragment extends Fragment implements SeekBar.OnSeekBarChange
 
     public boolean isValid() {
         if (isTrackingOpen) {
-            String trackingTriggerStr = etTrackingTrigger.getText().toString();
-            if (TextUtils.isEmpty(trackingTriggerStr))
-                return false;
-            int trackingTrigger = Integer.parseInt(trackingTriggerStr);
-            if (trackingTrigger > 65535)
-                return false;
+            if (activity.deviceType != 4 && activity.deviceType != 6) {
+                String trackingTriggerStr = etTrackingTrigger.getText().toString();
+                if (TextUtils.isEmpty(trackingTriggerStr))
+                    return false;
+                int trackingTrigger = Integer.parseInt(trackingTriggerStr);
+                if (trackingTrigger > 65535)
+                    return false;
+            }
             String scanWindowStr = etScanWindow.getText().toString();
             if (TextUtils.isEmpty(scanWindowStr))
                 return false;
