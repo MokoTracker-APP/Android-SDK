@@ -16,7 +16,7 @@ include ':app', ':mokosupport'
 
 
 	dependencies {
-		...MokoTracker+
+		...
 		implementation project(path: ':mokosupport')
 	}
 
@@ -76,7 +76,7 @@ Device types can be distinguished by `parseDeviceInfo(DeviceInfo deviceInfo)`.Re
         Iterator iterator = map.keySet().iterator();
         if (iterator.hasNext()) {
             ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
-            if (parcelUuid.toString().startsWith("0000ff02")) {
+            if (parcelUuid.toString().startsWith("0000ff04")) {
                 byte[] bytes = map.get(parcelUuid);
                 if (bytes != null) {
                     major = String.valueOf(MokoUtils.toInt(Arrays.copyOfRange(bytes, 0, 2)));
@@ -86,7 +86,9 @@ Device types can be distinguished by `parseDeviceInfo(DeviceInfo deviceInfo)`.Re
                     String binary = MokoUtils.hexString2binaryString(MokoUtils.byte2HexString(bytes[6]));
                     connectable = Integer.parseInt(binary.substring(7));
                     track = Integer.parseInt(binary.substring(6, 7));
-                    battery = MokoUtils.toInt(Arrays.copyOfRange(bytes, 7, 9));
+                    isCharging = Integer.parseInt(binary.substring(3, 4)) == 1;
+                    battery = bytes[7] & 0xFF;
+                    available = 100 - (bytes[8] & 0xFF);
                 }
             } else {
                 return null;
