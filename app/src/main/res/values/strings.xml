@@ -32,7 +32,7 @@
     <string name="permission_location_need_title">Turn on Location permission</string>
     <string name="permission_location_need_content">After that, MokoTracker+ could search and connect with the device</string>
     <string name="disconnect_alert">The device is disconnected. Please click the “CONNECT” on the top to reconnect.</string>
-    <string name="title_advertiser">ADERTISING</string>
+    <string name="title_advertiser">ADVERTISING</string>
     <string name="title_tracker">TRACKER</string>
     <string name="title_setting">SETTING</string>
     <string name="title_device">DEVICE</string>
