@@ -104,7 +104,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         setContentView(R.layout.activity_device_info);
         ButterKnife.bind(this);
         deviceType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, -1);
-        mBattery = getIntent().getIntExtra(AppConstants.EXTRA_KEY_DEVICE_BATTERY, 0);
         if (deviceType < 0) {
             finish();
             return;
@@ -176,8 +175,10 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void run() {
                 if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-                    if (MokoSupport.getInstance().exportDatas != null)
+                    if (MokoSupport.getInstance().exportDatas != null) {
                         MokoSupport.getInstance().exportDatas.clear();
+                        MokoSupport.getInstance().storeString = null;
+                    }
                     showDisconnectDialog();
                 }
                 if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
@@ -302,7 +303,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                         break;
                     case BATTERY:
                         int battery = MokoUtils.toInt(value);
-                        deviceFragment.setBatteryValtage(battery, mBattery);
+                        mBattery = battery;
                         break;
                     case DEVICE_MODEL:
                         String productModel = new String(value);
@@ -319,6 +320,10 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                             firmwareVersion = firmwareVersion.substring(begin + 1);
                         }
                         deviceFragment.setFirmwareVersion(firmwareVersion);
+                        break;
+                    case BATTERY_PERCENT:
+                        int batteryPercent = value[0] & 0xFF;
+                        deviceFragment.setBatteryValtage(mBattery, batteryPercent);
                         break;
                     case HARDWARE_VERSION:
                         String hardwareVersion = new String(value);
@@ -690,6 +695,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         List<OrderTask> orderTasks = new ArrayList<>();
         // device
         orderTasks.add(OrderTaskAssembler.getBattery());
+        orderTasks.add(OrderTaskAssembler.getBatteryPercent());
         orderTasks.add(OrderTaskAssembler.getMacAddress());
         orderTasks.add(OrderTaskAssembler.getDeviceModel());
         orderTasks.add(OrderTaskAssembler.getSoftwareVersion());

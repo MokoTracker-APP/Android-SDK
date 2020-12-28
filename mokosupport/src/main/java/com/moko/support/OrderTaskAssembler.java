@@ -3,6 +3,7 @@ package com.moko.support;
 
 import com.moko.support.entity.ConfigKeyEnum;
 import com.moko.support.task.GetAdvIntervalTask;
+import com.moko.support.task.GetBatteryPercentTask;
 import com.moko.support.task.GetBatteryTask;
 import com.moko.support.task.GetConnectionModeTask;
 import com.moko.support.task.GetDeviceModelTask;
@@ -73,6 +74,11 @@ public class OrderTaskAssembler {
     public static OrderTask getBattery() {
         GetBatteryTask getBatteryTask = new GetBatteryTask();
         return getBatteryTask;
+    }
+
+    public static OrderTask getBatteryPercent() {
+        GetBatteryPercentTask getBatteryPercentTask = new GetBatteryPercentTask();
+        return getBatteryPercentTask;
     }
 
     public static OrderTask getDeviceName() {

@@ -322,7 +322,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private String mPassword;
     private String mSavedPassword;
     private boolean shouldUpdate;
-    private int mBattery;
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
@@ -359,7 +358,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         chooseFirmwareFile();
                         return;
                     }
-                    mBattery = beaconInfo.battery;
                     showLoadingProgressDialog();
                     ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, beaconInfo.mac), 500);
                 }
@@ -482,7 +480,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     }
                     Intent i = new Intent(MainActivity.this, DeviceInfoActivity.class);
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_TYPE, type);
-                    i.putExtra(AppConstants.EXTRA_KEY_DEVICE_BATTERY, mBattery);
                     startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
                     break;
                 case PASSWORD:

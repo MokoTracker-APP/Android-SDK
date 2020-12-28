@@ -110,7 +110,7 @@
             android:layout_marginRight="20dp"
             android:layout_toLeftOf="@id/tv_export"
             android:drawableTop="@drawable/selector_empty_enable"
-            android:enabled="false"
+            android:enabled="true"
             android:text="Empty"
             android:textColor="@color/black_333333"
             android:textSize="15sp" />

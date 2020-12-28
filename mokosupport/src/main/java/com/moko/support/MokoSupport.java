@@ -491,6 +491,7 @@ public class MokoSupport implements MokoResponseCallback {
         OrderTask orderTask = mQueue.peek();
         if (value != null && value.length > 0 && orderTask.response.responseType == OrderTask.RESPONSE_TYPE_READ) {
             switch (orderTask.orderType) {
+                case BATTERY_PERCENT:
                 case DEVICE_MODEL:
                 case PRODUCT_DATE:
                 case FIRMWARE_VERSION:
@@ -563,4 +564,5 @@ public class MokoSupport implements MokoResponseCallback {
     }
 
     public ArrayList<ExportData> exportDatas;
+    public StringBuilder storeString;
 }

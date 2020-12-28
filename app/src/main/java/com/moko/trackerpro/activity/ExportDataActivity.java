@@ -67,9 +67,8 @@ public class ExportDataActivity extends BaseActivity {
     TextView tvCount;
 
     private boolean mReceiverTag = false;
-    private StringBuilder storeString = new StringBuilder();
+    private StringBuilder storeString;
     private ArrayList<ExportData> exportDatas;
-    private boolean mIsShown;
     private boolean isSync;
     private ExportDataListAdapter adapter;
 
@@ -85,10 +84,13 @@ public class ExportDataActivity extends BaseActivity {
         int sum = savedCount + leftCount;
         tvSum.setText(String.format("Sum:%d/%d", savedCount, sum));
         exportDatas = MokoSupport.getInstance().exportDatas;
-        if (exportDatas != null && exportDatas.size() > 0) {
+        storeString = MokoSupport.getInstance().storeString;
+        if (exportDatas != null && exportDatas.size() > 0 && storeString != null) {
             tvCount.setText(String.format("Count:%d", exportDatas.size()));
+            tvExport.setEnabled(true);
         } else {
             exportDatas = new ArrayList<>();
+            storeString = new StringBuilder();
         }
         adapter = new ExportDataListAdapter();
         adapter.openLoadAnimation();
@@ -130,10 +132,6 @@ public class ExportDataActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderType) {
                     case STORE_DATA_NOTIFY:
-                        if (!mIsShown) {
-                            mIsShown = true;
-                            tvExport.setEnabled(true);
-                        }
                         int length = value.length;
 
                         if (length >= 13) {
@@ -228,7 +226,6 @@ public class ExportDataActivity extends BaseActivity {
                                     if (length == 0) {
                                         storeString = new StringBuilder();
                                         LogModule.writeTrackedFile("");
-                                        mIsShown = false;
                                         exportDatas.clear();
                                         adapter.replaceData(exportDatas);
                                         tvExport.setEnabled(false);
@@ -236,7 +233,7 @@ public class ExportDataActivity extends BaseActivity {
                                         tvEmpty.postDelayed(() -> {
                                             showSyncingProgressDialog();
                                             MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSavedCount());
-                                        }, 500);
+                                        }, 700);
                                     } else {
                                         ToastUtils.showToast(ExportDataActivity.this, "Failed");
                                     }
@@ -324,6 +321,7 @@ public class ExportDataActivity extends BaseActivity {
                 if (!isSync) {
                     isSync = true;
                     tvEmpty.setEnabled(false);
+                    tvExport.setEnabled(false);
                     MokoSupport.getInstance().enableStoreDataNotify();
                     Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
                     ivSync.startAnimation(animation);
@@ -332,31 +330,29 @@ public class ExportDataActivity extends BaseActivity {
                     MokoSupport.getInstance().disableStoreDataNotify();
                     isSync = false;
                     tvEmpty.setEnabled(true);
+                    if (exportDatas != null && exportDatas.size() > 0 && storeString != null) {
+                        tvExport.setEnabled(true);
+                    }
                     ivSync.clearAnimation();
                     tvSync.setText("Sync");
                 }
                 break;
             case R.id.tv_export:
-                if (mIsShown) {
-                    showSyncingProgressDialog();
-                    LogModule.writeTrackedFile("");
-                    tvExport.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismissSyncProgressDialog();
-                            String log = storeString.toString();
-                            if (!TextUtils.isEmpty(log)) {
-                                LogModule.writeTrackedFile(log);
-                                File file = LogModule.getTrackedFile();
-                                // 发送邮件
-                                String address = "Development@mokotechnology.com";
-                                String title = "Tracked Log";
-                                String content = title;
-                                Utils.sendEmail(ExportDataActivity.this, address, content, title, "Choose Email Client", file);
-                            }
-                        }
-                    }, 500);
-                }
+                showSyncingProgressDialog();
+                LogModule.writeTrackedFile("");
+                tvExport.postDelayed(() -> {
+                    dismissSyncProgressDialog();
+                    final String log = storeString.toString();
+                    if (!TextUtils.isEmpty(log)) {
+                        LogModule.writeTrackedFile(log);
+                        File file = LogModule.getTrackedFile();
+                        // 发送邮件
+                        String address = "Development@mokotechnology.com";
+                        String title = "Tracked Log";
+                        String content = title;
+                        Utils.sendEmail(ExportDataActivity.this, address, content, title, "Choose Email Client", file);
+                    }
+                }, 500);
                 break;
         }
     }
@@ -365,6 +361,7 @@ public class ExportDataActivity extends BaseActivity {
         // 关闭通知
         MokoSupport.getInstance().disableStoreDataNotify();
         MokoSupport.getInstance().exportDatas = exportDatas;
+        MokoSupport.getInstance().storeString = storeString;
         finish();
     }
 

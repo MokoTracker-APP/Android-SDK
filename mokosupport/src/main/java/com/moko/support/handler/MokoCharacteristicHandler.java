@@ -21,6 +21,7 @@ public class MokoCharacteristicHandler {
     private static MokoCharacteristicHandler INSTANCE;
 
     public static final String SERVICE_UUID_HEADER_SYSTEM = "0000180a";
+    public static final String SERVICE_UUID_HEADER_BATTERY = "0000180f";
     public static final String SERVICE_UUID_HEADER_PARAMS = "0000ff00";
 
     public HashMap<OrderType, MokoCharacteristic> mokoCharacteristicMap;
@@ -84,6 +85,18 @@ public class MokoCharacteristicHandler {
                     }
                     if (characteristicUuid.equals(OrderType.SOFTWARE_VERSION.getUuid())) {
                         mokoCharacteristicMap.put(OrderType.SOFTWARE_VERSION, new MokoCharacteristic(characteristic, OrderType.SOFTWARE_VERSION));
+                        continue;
+                    }
+                }
+            }
+            if (service.getUuid().toString().startsWith(SERVICE_UUID_HEADER_BATTERY)) {
+                for (BluetoothGattCharacteristic characteristic : characteristics) {
+                    String characteristicUuid = characteristic.getUuid().toString();
+                    if (TextUtils.isEmpty(characteristicUuid)) {
+                        continue;
+                    }
+                    if (characteristicUuid.equals(OrderType.BATTERY_PERCENT.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.BATTERY_PERCENT, new MokoCharacteristic(characteristic, OrderType.BATTERY_PERCENT));
                         continue;
                     }
                 }
