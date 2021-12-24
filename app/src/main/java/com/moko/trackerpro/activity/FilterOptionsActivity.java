@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -41,7 +39,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +46,6 @@ import butterknife.OnClick;
 
 public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSeekBarChangeListener {
 
-    public static final String UUID_PATTERN = "[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}";
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
     @BindView(R.id.sb_rssi_filter)
     SeekBar sbRssiFilter;
@@ -105,8 +101,6 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
     CheckBox cbRawAdvData;
     private boolean mReceiverTag = false;
 
-    private Pattern pattern;
-
     private boolean savedParamsError;
 
     private boolean isSaveFailed;
@@ -118,55 +112,6 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
         ButterKnife.bind(this);
 
         sbRssiFilter.setOnSeekBarChangeListener(this);
-
-        pattern = Pattern.compile(UUID_PATTERN);
-        etIbeaconUuid.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String input = s.toString();
-                if (!pattern.matcher(input).matches()) {
-                    if (input.length() == 9 && !input.endsWith("-")) {
-                        String show = input.substring(0, 8) + "-" + input.substring(8, input.length());
-                        etIbeaconUuid.setText(show);
-                        etIbeaconUuid.setSelection(show.length());
-                    }
-                    if (input.length() == 14 && !input.endsWith("-")) {
-                        String show = input.substring(0, 13) + "-" + input.substring(13, input.length());
-                        etIbeaconUuid.setText(show);
-                        etIbeaconUuid.setSelection(show.length());
-                    }
-                    if (input.length() == 19 && !input.endsWith("-")) {
-                        String show = input.substring(0, 18) + "-" + input.substring(18, input.length());
-                        etIbeaconUuid.setText(show);
-                        etIbeaconUuid.setSelection(show.length());
-                    }
-                    if (input.length() == 24 && !input.endsWith("-")) {
-                        String show = input.substring(0, 23) + "-" + input.substring(23, input.length());
-                        etIbeaconUuid.setText(show);
-                        etIbeaconUuid.setSelection(show.length());
-                    }
-                    if (input.length() == 32 && input.indexOf("-") < 0) {
-                        StringBuilder stringBuilder = new StringBuilder(input);
-                        stringBuilder.insert(8, "-");
-                        stringBuilder.insert(13, "-");
-                        stringBuilder.insert(18, "-");
-                        stringBuilder.insert(23, "-");
-                        etIbeaconUuid.setText(stringBuilder.toString());
-                        etIbeaconUuid.setSelection(stringBuilder.toString().length());
-                    }
-                }
-            }
-        });
         InputFilter inputFilter = (source, start, end, dest, dstart, dend) -> {
             if (!(source + "").matches(FILTER_ASCII)) {
                 return "";
@@ -312,12 +257,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
                                         if (length > 1) {
                                             byte[] uuidBytes = Arrays.copyOfRange(value, 5, 4 + length);
                                             String filterUUID = MokoUtils.bytesToHexString(uuidBytes).toUpperCase();
-                                            StringBuilder stringBuilder = new StringBuilder(filterUUID);
-                                            stringBuilder.insert(8, "-");
-                                            stringBuilder.insert(13, "-");
-                                            stringBuilder.insert(18, "-");
-                                            stringBuilder.insert(23, "-");
-                                            etIbeaconUuid.setText(stringBuilder.toString());
+                                            etIbeaconUuid.setText(filterUUID);
                                         }
                                     }
                                     break;
@@ -529,7 +469,6 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
         final String mac = etMacAddress.getText().toString();
         final String name = etAdvName.getText().toString();
         final String uuid = etIbeaconUuid.getText().toString();
-        String uuidStr = uuid.replaceAll("-", "");
         final String majorMin = etIbeaconMajorMin.getText().toString();
         final String majorMax = etIbeaconMajorMax.getText().toString();
         final String minorMin = etIbeaconMinorMin.getText().toString();
@@ -539,7 +478,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
         orderTasks.add(OrderTaskAssembler.setFilterRssi(filterRssi));
         orderTasks.add(OrderTaskAssembler.setFilterMac(filterMacEnable ? mac : "", cbMacAddress.isChecked()));
         orderTasks.add(OrderTaskAssembler.setFilterName(filterNameEnable ? name : "", cbAdvName.isChecked()));
-        orderTasks.add(OrderTaskAssembler.setFilterUUID(filterUUIDEnable ? uuidStr : "", cbIbeaconUuid.isChecked()));
+        orderTasks.add(OrderTaskAssembler.setFilterUUID(filterUUIDEnable ? uuid : "", cbIbeaconUuid.isChecked()));
         orderTasks.add(OrderTaskAssembler.setFilterMajorRange(
                 filterMajorEnable ? 1 : 0,
                 filterMajorEnable ? Integer.parseInt(majorMin) : 0,
@@ -580,7 +519,7 @@ public class FilterOptionsActivity extends BaseActivity implements SeekBar.OnSee
             if (TextUtils.isEmpty(uuid))
                 return false;
             int length = uuid.length();
-            if (length != 36)
+            if (length % 2 != 0)
                 return false;
         }
         if (filterMajorEnable) {
